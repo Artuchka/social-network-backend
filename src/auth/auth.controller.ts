@@ -7,10 +7,10 @@ import {
   Post,
   Res,
 } from '@nestjs/common'
-import { NewUserDto } from 'src/user/dto/new-user.dto'
 import { AuthService } from './auth.service'
 import { Response } from 'express'
-import { ExistingUserDto } from 'src/user/dto/existing-user.dto'
+import { NewUserDto } from './../user/dto/new-user.dto'
+import { ExistingUserDto } from './../user/dto/existing-user.dto'
 
 @Controller('auth')
 export class AuthController {
