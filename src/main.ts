@@ -7,7 +7,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api')
   app.enableCors()
-  app.use(cookieParser())
+  app.use(cookieParser(process.env.SECRET))
 
   await app.listen(2000)
 }
