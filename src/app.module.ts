@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module'
 import { UserModule } from './user/user.module'
 import { RolesGuard } from './auth/guards/roles.guard'
 import { APP_GUARD } from '@nestjs/core'
+import { PostModule } from './post/post.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { APP_GUARD } from '@nestjs/core'
     }),
     AuthModule,
     UserModule,
+    PostModule,
   ],
   controllers: [],
   providers: [

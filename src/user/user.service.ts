@@ -94,6 +94,19 @@ export class UserService {
         return this.userModel.db.dropCollection('users', errCallback)
     }
   }
+
+  async addPost({ postId, authorId }) {
+    const user = await this.userModel.findByIdAndUpdate(
+      authorId,
+      {
+        $push: { posts: postId },
+      },
+      {
+        upsert: true,
+        new: true,
+      },
+    )
+  }
 }
 
 function errCallback(err) {
