@@ -1,4 +1,9 @@
-import { BadRequestException, HttpException, Injectable } from '@nestjs/common'
+import {
+  BadRequestException,
+  HttpException,
+  Injectable,
+  UseGuards,
+} from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import mongoose, { Model } from 'mongoose'
 import { UserDocument } from './user.schema'
@@ -16,6 +21,7 @@ export class UserService {
       id: user.id,
       email: user.email,
       username: user.username,
+      roles: user.roles,
     }
   }
 
