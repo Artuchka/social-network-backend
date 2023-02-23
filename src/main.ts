@@ -21,7 +21,9 @@ async function bootstrap() {
     .addTag('Post')
     .build()
   const document = SwaggerModule.createDocument(app, config)
-  SwaggerModule.setup('api-docs', app, document)
+  SwaggerModule.setup('api/api-docs', app, document, {
+    customSiteTitle: 'Zavod REST API DOCS',
+  })
 
   await app.listen(2000)
 }
