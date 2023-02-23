@@ -11,6 +11,7 @@ import mongoose, { Model } from 'mongoose'
 import { User, UserDocument } from './user.schema'
 import { UserDetails } from './user-details.interface'
 import { NewUserDto } from './dto/new-user.dto'
+import { UpdateUserDto } from './dto/update-user.dto'
 
 @Injectable()
 export class UserService {
@@ -54,10 +55,7 @@ export class UserService {
     return user
   }
 
-  async updateSingle(
-    id: string,
-    userProps: Partial<User>,
-  ): Promise<UserDocument> {
+  async updateSingle(id: string, dto: UpdateUserDto): Promise<UserDocument> {
     const foundUser = await this.userModel.findById(id)
 
     if (!foundUser) {
@@ -76,14 +74,14 @@ export class UserService {
       'avatar',
     ]
 
-    Object.keys(userProps).forEach((key) => {
+    Object.keys(dto).forEach((key) => {
       if (!allowed.includes(key)) {
         throw new ForbiddenException(
           `😡Запрещенно обновлять поле \`${key}\` у пользователя😡`,
         )
       }
 
-      foundUser[key] = userProps[key]
+      foundUser[key] = dto[key]
     })
     await foundUser.save()
 

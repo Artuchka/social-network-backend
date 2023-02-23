@@ -1,12 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document, HydratedDocument } from 'mongoose'
 import { Role } from './role.enum'
+import { Gender } from './gender.enum'
 
 // export interface IUserDocuemnt extends User, Document {}
 // export type UserDocument = HydratedDocument<User>
 export type UserDocument = User & Document
 
-@Schema()
+@Schema({ timestamps: true })
 export class User {
   @Prop({
     type: String,
@@ -54,9 +55,10 @@ export class User {
 
   @Prop({
     type: String,
-    default: '',
+    enum: Gender,
+    default: Gender.Male,
   })
-  gender: string
+  gender: Gender
 
   @Prop({
     type: Date,

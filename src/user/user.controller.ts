@@ -17,6 +17,7 @@ import { RolesGuard } from 'src/auth/guards/roles.guard'
 import { User } from './decorators/user.decorator'
 import { UserDetails } from './user-details.interface'
 import { User as UserType } from './user.schema'
+import { UpdateUserDto } from './dto/update-user.dto'
 
 @Controller('user')
 export class UserController {
@@ -27,7 +28,6 @@ export class UserController {
   @Roles(Role.USER)
   async getAll() {
     const users = await this.userService.getAll()
-    console.log({ users })
 
     return { message: 'all user', users }
   }
@@ -41,6 +41,11 @@ export class UserController {
     }
 
     return { message: 'single user', user }
+  }
+
+  @Delete('/drop/:name')
+  dropCollection(@Param('name') colName: string) {
+    return this.userService.dropDB(colName)
   }
 
   @Delete(':id')
@@ -59,20 +64,17 @@ export class UserController {
   @UseGuards(JwtGuard)
   async updateSingle(
     @Param('id') id: string,
-    @Body() userProps: Partial<UserType>,
+    @Body() dto: UpdateUserDto,
     @User() user: UserDetails,
   ) {
+    console.log({ dto })
+
     const { id: requestUserId, roles } = user
     if (requestUserId !== id && !roles.includes(Role.ADMIN)) {
       throw new ForbiddenException(`You are not allowed to update this user`)
     }
-    const updatedUser = await this.userService.updateSingle(id, userProps)
 
+    const updatedUser = await this.userService.updateSingle(id, dto)
     return { message: 'updated', user: updatedUser }
   }
-
-  // @Delete(':name')
-  // dropCollection(@Param('name') colName: string) {
-  //   return this.userService.dropDB(colName)
-  // }
 }
