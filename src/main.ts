@@ -6,7 +6,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 
 const opts = {
   customSiteTitle: 'Zavod REST API DOCS',
-  customfavIcon: 'https://avatars.githubusercontent.com/u/6936373?s=200&v=4',
+  customfavIcon:
+    'https://avatars.githubusercontent.com/u/42734308?s=400&u=8343dfa9b3c5a391e40620e5bed713e2cd3816a4&v=4',
   customJs: [
     'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.min.js',
     'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.min.js',
