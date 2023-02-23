@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common'
 import { UserService } from './user.service'
 import { Role } from './role.enum'
-import { RolesGuard } from 'src/auth/guards/roles.guard'
 import { User } from './decorators/user.decorator'
 import { UserDetails } from './user-details.interface'
 import { UpdateUserDto } from './dto/update-user.dto'
@@ -24,6 +23,7 @@ import {
 import { UserSchema } from './user.schema'
 import { JwtGuard } from '../auth/guards/jwt.guard'
 import { Roles } from '../auth/decorators/role.decorator'
+import { RolesGuard } from '../auth/guards/roles.guard'
 
 @ApiTags('User')
 @Controller('user')
