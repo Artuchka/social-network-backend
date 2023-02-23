@@ -1,4 +1,4 @@
-import { IsDefined, IsString } from 'class-validator'
+import { IsDefined, IsNumberString, IsString } from 'class-validator'
 
 export class NewPostDto {
   @IsString()
@@ -8,4 +8,9 @@ export class NewPostDto {
   @IsString()
   @IsDefined()
   text: string
+}
+
+export class AdditionalPostInfo {
+  @IsNumberString()
+  likesAmount: number
 }

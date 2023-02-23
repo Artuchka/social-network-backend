@@ -23,10 +23,26 @@ export class Post {
   text: string
 
   @Prop({
-    type: Number,
-    default: 0,
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+    default: [],
   })
-  likesAmount: number
+  liked: User[]
+
+  @Prop({
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+    default: [],
+  })
+  disliked: User[]
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post)
