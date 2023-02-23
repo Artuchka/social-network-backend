@@ -3,8 +3,8 @@ import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { PostDocument } from './post.schema'
 import { NewPostDto } from './dto/new-post.dto'
-import { UserService } from 'src/user/user.service'
 import { UpdatePostDto } from './dto/update-post.dto'
+import { UserService } from '../user/user.service'
 
 @Injectable()
 export class PostService {

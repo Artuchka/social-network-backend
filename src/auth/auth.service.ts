@@ -3,13 +3,13 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
-import { NewUserDto } from 'src/user/dto/new-user.dto'
-import { UserService } from 'src/user/user.service'
 import * as bcrypt from 'bcryptjs'
-import { ExistingUserDto } from 'src/user/dto/existing-user.dto'
-import { UserDetails } from 'src/user/user-details.interface'
 import { JwtService } from '@nestjs/jwt'
 import { Response } from 'express'
+import { UserService } from '../user/user.service'
+import { NewUserDto } from '../user/dto/new-user.dto'
+import { UserDetails } from '../user/user-details.interface'
+import { ExistingUserDto } from '../user/dto/existing-user.dto'
 
 @Injectable()
 export class AuthService {

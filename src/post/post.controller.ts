@@ -12,9 +12,9 @@ import {
 import { NewPostDto } from './dto/new-post.dto'
 import { PostService } from './post.service'
 import { UpdatePostDto } from './dto/update-post.dto'
-import { User } from 'src/user/decorators/user.decorator'
-import { JwtGuard } from 'src/auth/guards/jwt.guard'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { User } from '../user/decorators/user.decorator'
+import { JwtGuard } from '../auth/guards/jwt.guard'
 
 @ApiTags('Post')
 @Controller('post')
