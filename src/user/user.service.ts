@@ -113,6 +113,16 @@ export class UserService {
       },
     )
   }
+
+  async removePost({ postId, authorId }) {
+    const user = await this.userModel.findByIdAndUpdate(
+      authorId,
+      {
+        $pull: { posts: postId },
+      },
+      { new: true },
+    )
+  }
 }
 
 function errCallback(err) {

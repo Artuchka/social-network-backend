@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -38,6 +39,19 @@ export class PostController {
     }
   }
 
+  @Delete(':id')
+  async deleteSingle(
+    @Param('id') postId: string,
+    @Body('authorId') authorId: string,
+  ) {
+    const post = await this.postService.deleteSingle(postId, authorId)
+
+    return {
+      message: 'deleted',
+      post,
+    }
+  }
+
   @Patch(':id')
   async updateSingle(@Param('id') id: string, @Body() dto: UpdatePostDto) {
     const post = await this.postService.updateSingle(id, dto)
@@ -53,8 +67,10 @@ export class PostController {
   async likePost(@Param('id') id: string, @User('id') userId: string) {
     const post = await this.postService.like(id, userId)
 
+    console.log({ post })
+
     if (!post) {
-      throw new BadRequestException(`Alrady liked by ${userId}`)
+      throw new BadRequestException(`Alrady liked by ${userId} OR no such post`)
     }
 
     return {

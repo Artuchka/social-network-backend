@@ -29,6 +29,14 @@ export class PostService {
     return newPost
   }
 
+  async deleteSingle(id: string, authorId: string) {
+    const deletedPost = await this.postModel.findByIdAndDelete(id)
+
+    this.userService.removePost({ authorId, postId: deletedPost.id })
+
+    return deletedPost
+  }
+
   async updateSingle(id: string, dto: UpdatePostDto) {
     const updatedPost = await this.postModel.findByIdAndUpdate(id, dto, {
       new: true,
@@ -37,8 +45,6 @@ export class PostService {
   }
 
   async like(id: string, userId: string) {
-    console.log({ userId })
-
     const updatedPost = await this.postModel.findOneAndUpdate(
       { _id: id, liked: { $ne: userId } },
       { $push: { liked: userId }, $pull: { disliked: userId } },
@@ -48,9 +54,8 @@ export class PostService {
     )
     return updatedPost
   }
-  async dislike(id: string, userId: string) {
-    console.log({ userId })
 
+  async dislike(id: string, userId: string) {
     const updatedPost = await this.postModel.findOneAndUpdate(
       { _id: id, disliked: { $ne: userId } },
       { $push: { disliked: userId }, $pull: { liked: userId } },
