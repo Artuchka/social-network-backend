@@ -2,13 +2,13 @@
 
 > 📛 Here are Backend files, but look through [Frontend](https://github.com/brvjeo/social-network) part if you're interested
 
-> ## [🔗Swagger UI Documentation](https://zavod-backend.vercel.app/api-docs/)
+## [🔗Swagger UI Documentation](https://zavod-backend.vercel.app/api-docs/)
 
-> ## 📚About the Project:
+## 📚About the Project:
 
 REST API for Social Network
 
-> ## 🧰Technologies Used:
+## 🧰Technologies Used:
 
 - Node JS
 - NestJS
@@ -19,7 +19,7 @@ REST API for Social Network
 - SwaggerUI
 - class-validator
 
-> ## 🛠️Setup / Installation:
+## 🛠️Setup / Installation:
 
 ```bash
 $ npm install
@@ -38,7 +38,7 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-> ## 🚶Approach:
+## 🚶Approach:
 
 `bcryptjs` is used for hashing passwords with salt before storing them in Database
 
@@ -46,6 +46,6 @@ $ npm run start:prod
 
 For hosting the server I chose vercel
 
-> ## ©️License:
->
-> MIT license @Artuchka
+## ©️License:
+
+MIT license @Artuchka
