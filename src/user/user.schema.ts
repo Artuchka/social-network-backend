@@ -45,6 +45,36 @@ export class User {
     default: Role.USER,
   })
   roles: [Role]
+
+  @Prop({
+    type: String,
+    default: '',
+  })
+  phone: string
+
+  @Prop({
+    type: String,
+    default: '',
+  })
+  gender: string
+
+  @Prop({
+    type: Date,
+    default: '',
+  })
+  birthday: Date
+
+  @Prop({
+    type: String,
+    default: '',
+  })
+  location: string
+
+  @Prop({
+    type: String,
+    default: '',
+  })
+  avatar: string
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
