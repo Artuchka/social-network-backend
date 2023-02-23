@@ -28,6 +28,7 @@
     "@nestjs/mongoose": "^9.2.1",
     "@nestjs/passport": "^9.0.3",
     "@nestjs/platform-express": "^9.0.0",
+    "@nestjs/swagger": "^6.2.1",
     "@types/bcrypt": "^5.0.0",
     "bcryptjs": "^2.4.3",
     "class-transformer": "^0.5.1",

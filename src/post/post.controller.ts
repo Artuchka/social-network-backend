@@ -14,12 +14,15 @@ import { PostService } from './post.service'
 import { UpdatePostDto } from './dto/update-post.dto'
 import { User } from 'src/user/decorators/user.decorator'
 import { JwtGuard } from 'src/auth/guards/jwt.guard'
+import { ApiOperation, ApiTags } from '@nestjs/swagger'
 
+@ApiTags('Post')
 @Controller('post')
 export class PostController {
   constructor(private postService: PostService) {}
 
   @Get()
+  @ApiOperation({ summary: 'Get all posts' })
   async getAll() {
     const posts = await this.postService.getAll()
 
@@ -30,6 +33,7 @@ export class PostController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create a post' })
   async create(@Body() dto: NewPostDto) {
     const post = await this.postService.create(dto)
 
@@ -40,6 +44,7 @@ export class PostController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete post' })
   async deleteSingle(
     @Param('id') postId: string,
     @Body('authorId') authorId: string,
@@ -53,6 +58,7 @@ export class PostController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Update post' })
   async updateSingle(@Param('id') id: string, @Body() dto: UpdatePostDto) {
     const post = await this.postService.updateSingle(id, dto)
 
@@ -64,6 +70,7 @@ export class PostController {
 
   @Get(':id/like')
   @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Like post' })
   async likePost(@Param('id') id: string, @User('id') userId: string) {
     const post = await this.postService.like(id, userId)
 
@@ -81,6 +88,7 @@ export class PostController {
 
   @Get(':id/dislike')
   @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Dislike post' })
   async dislikePost(@Param('id') id: string, @User('id') userId: string) {
     const post = await this.postService.dislike(id, userId)
 

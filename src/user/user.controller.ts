@@ -16,9 +16,16 @@ import { Role } from './role.enum'
 import { RolesGuard } from 'src/auth/guards/roles.guard'
 import { User } from './decorators/user.decorator'
 import { UserDetails } from './user-details.interface'
-import { User as UserType } from './user.schema'
 import { UpdateUserDto } from './dto/update-user.dto'
+import {
+  ApiExcludeEndpoint,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger'
+import { UserSchema } from './user.schema'
 
+@ApiTags('User')
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
@@ -26,14 +33,16 @@ export class UserController {
   @Get()
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.USER)
+  @ApiOperation({ summary: 'Get all users' })
   async getAll() {
     const users = await this.userService.getAll()
 
     return { message: 'all user', users }
   }
 
-  @UseGuards(JwtGuard)
   @Get(':id')
+  @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Get user details' })
   async getSingle(@Param('id') id: string) {
     const user = await this.userService.getSingleById(id)
     if (!user) {
@@ -44,6 +53,7 @@ export class UserController {
   }
 
   @Delete('/drop/:name')
+  @ApiExcludeEndpoint()
   dropCollection(@Param('name') colName: string) {
     return this.userService.dropDB(colName)
   }
@@ -51,6 +61,7 @@ export class UserController {
   @Delete(':id')
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'Delete a user' })
   async deleteSingle(@Param('id') id: string) {
     const user = await this.userService.deleteSingle(id)
     if (!user) {
@@ -62,6 +73,7 @@ export class UserController {
 
   @Patch(':id')
   @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Update a user' })
   async updateSingle(
     @Param('id') id: string,
     @Body() dto: UpdateUserDto,

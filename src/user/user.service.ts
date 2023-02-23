@@ -38,7 +38,7 @@ export class UserService {
   async getSingleById(id: string): Promise<UserDocument> {
     const user = await this.userModel
       .findById(id)
-      .populate({ path: 'posts', select: 'text likesAmount' })
+      .populate({ path: 'posts', select: 'text liked disliked' })
     return user
   }
 
