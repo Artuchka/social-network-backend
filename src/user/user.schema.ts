@@ -8,7 +8,7 @@ import { Post } from 'src/post/post.schema'
 // export type UserDocument = HydratedDocument<User>
 export type UserDocument = User & Document
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, toJSON: { virtuals: true } })
 export class User {
   @Prop({
     type: String,
@@ -89,6 +89,17 @@ export class User {
     default: [],
   })
   posts: Post[]
+
+  id: string
+  fullName: string
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
+
+UserSchema.virtual('id').get(function (this: UserDocument) {
+  return this._id
+})
+
+UserSchema.virtual('fullname').get(function (this: UserDocument) {
+  return `${this.firstname} ${this.lastname}`
+})
