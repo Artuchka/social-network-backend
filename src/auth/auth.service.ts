@@ -54,6 +54,7 @@ export class AuthService {
     if (!isPassValid) {
       throw new BadRequestException('bad password')
     }
+
     const userDetails = this.userService._getUserDetails(user)
     return userDetails
   }

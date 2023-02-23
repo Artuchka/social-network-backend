@@ -1,12 +1,14 @@
 import {
   BadRequestException,
+  ForbiddenException,
   HttpException,
   Injectable,
+  NotFoundException,
   UseGuards,
 } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import mongoose, { Model } from 'mongoose'
-import { UserDocument } from './user.schema'
+import { User, UserDocument } from './user.schema'
 import { UserDetails } from './user-details.interface'
 import { NewUserDto } from './dto/new-user.dto'
 
@@ -47,9 +49,48 @@ export class UserService {
     return users
   }
 
-  async dropDB(colName: string): Promise<any> {
-    console.log({ colName })
+  async deleteSingle(id: string): Promise<UserDocument> {
+    const user = await this.userModel.findByIdAndDelete(id)
+    return user
+  }
 
+  async updateSingle(
+    id: string,
+    userProps: Partial<User>,
+  ): Promise<UserDocument> {
+    const foundUser = await this.userModel.findById(id)
+
+    if (!foundUser) {
+      throw new NotFoundException(`No user with id ${id}`)
+    }
+
+    const allowed = [
+      'username',
+      'firstname',
+      'lastname',
+      'phone',
+      'gender',
+      'birthday',
+      'location',
+      'email',
+      'avatar',
+    ]
+
+    Object.keys(userProps).forEach((key) => {
+      if (!allowed.includes(key)) {
+        throw new ForbiddenException(
+          `😡Запрещенно обновлять поле \`${key}\` у пользователя😡`,
+        )
+      }
+
+      foundUser[key] = userProps[key]
+    })
+    await foundUser.save()
+
+    return foundUser
+  }
+
+  async dropDB(colName: string): Promise<any> {
     switch (colName.toLowerCase()) {
       case 'user':
         return this.userModel.db.dropCollection('users', errCallback)

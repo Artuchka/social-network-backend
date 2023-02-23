@@ -1,4 +1,14 @@
-import { Controller, Delete, Get, Param, UseGuards } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Delete,
+  ForbiddenException,
+  Get,
+  NotFoundException,
+  Param,
+  Patch,
+  UseGuards,
+} from '@nestjs/common'
 import { UserService } from './user.service'
 import { JwtGuard } from 'src/auth/guards/jwt.guard'
 import { Roles } from 'src/auth/decorators/role.decorator'
@@ -6,28 +16,63 @@ import { Role } from './role.enum'
 import { RolesGuard } from 'src/auth/guards/roles.guard'
 import { User } from './decorators/user.decorator'
 import { UserDetails } from './user-details.interface'
+import { User as UserType } from './user.schema'
 
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @UseGuards(JwtGuard)
-  @Get(':id')
-  getSingle(@Param('id') id: string) {
-    return this.userService.getSingleById(id)
-  }
-
   @Get()
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.USER)
-  getAll(@User('email') username: string) {
-    console.log({ username })
+  async getAll() {
+    const users = await this.userService.getAll()
+    console.log({ users })
 
-    return this.userService.getAll()
+    return { message: 'all user', users }
   }
 
-  @Delete(':name')
-  dropCollection(@Param('name') colName: string) {
-    return this.userService.dropDB(colName)
+  @UseGuards(JwtGuard)
+  @Get(':id')
+  async getSingle(@Param('id') id: string) {
+    const user = await this.userService.getSingleById(id)
+    if (!user) {
+      throw new NotFoundException(`User ${id} not found`)
+    }
+
+    return { message: 'single user', user }
   }
+
+  @Delete(':id')
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  async deleteSingle(@Param('id') id: string) {
+    const user = await this.userService.deleteSingle(id)
+    if (!user) {
+      throw new NotFoundException(`User ${id} not found`)
+    }
+
+    return { message: 'deleted', user }
+  }
+
+  @Patch(':id')
+  @UseGuards(JwtGuard)
+  async updateSingle(
+    @Param('id') id: string,
+    @Body() userProps: Partial<UserType>,
+    @User() user: UserDetails,
+  ) {
+    const { id: requestUserId, roles } = user
+    if (requestUserId !== id && !roles.includes(Role.ADMIN)) {
+      throw new ForbiddenException(`You are not allowed to update this user`)
+    }
+    const updatedUser = await this.userService.updateSingle(id, userProps)
+
+    return { message: 'updated', user: updatedUser }
+  }
+
+  // @Delete(':name')
+  // dropCollection(@Param('name') colName: string) {
+  //   return this.userService.dropDB(colName)
+  // }
 }
