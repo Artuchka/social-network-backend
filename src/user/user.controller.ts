@@ -7,6 +7,7 @@ import {
   NotFoundException,
   Param,
   Patch,
+  Post,
   UseGuards,
 } from '@nestjs/common'
 import { UserService } from './user.service'
@@ -50,6 +51,25 @@ export class UserController {
     }
 
     return { message: 'single user', user }
+  }
+
+  @Post('/friendRequest')
+  @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Sending friend request' })
+  async addFriend(
+    @Body('requestorId') requestorId: string,
+    @Body('recieverId') recieverId: string,
+    @User('id') currentUserId: string,
+  ) {
+    if (currentUserId !== requestorId) {
+      throw new ForbiddenException('You are not logged in as requestor')
+    }
+    const { newRequestor, newReciever } = await this.userService.friendRequest({
+      requestorId,
+      recieverId,
+    })
+
+    return { message: 'friend request sent', newReciever, newRequestor }
   }
 
   @Delete('/drop/:name')

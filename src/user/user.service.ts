@@ -129,6 +129,56 @@ export class UserService {
       { new: true },
     )
   }
+
+  async friendRequest({ requestorId, recieverId }) {
+    const requestor = await this.userModel.findById(requestorId)
+    const reciever = await this.userModel.findById(recieverId)
+
+    if (!requestor || !reciever) {
+      throw new BadRequestException(
+        `${requestorId} or ${recieverId} is not a member of social network`,
+      )
+    }
+
+    const requestorAlreadyFollowingReciever =
+      reciever.followers.includes(requestorId) &&
+      requestor.following.includes(recieverId)
+    if (requestorAlreadyFollowingReciever) {
+      throw new BadRequestException(`Requestor is already following reciever`)
+    }
+
+    const recieverAlreadyFollowingRequestor =
+      reciever.following.includes(requestorId) &&
+      requestor.followers.includes(recieverId)
+    if (recieverAlreadyFollowingRequestor) {
+      throw new BadRequestException(
+        `Reciever is already following requestor. Please, send /friendConfirm from requestor`,
+      )
+    }
+
+    const requestorAlreadyFriendsWithReciever =
+      reciever.friends.includes(requestorId) &&
+      requestor.friends.includes(recieverId)
+    if (requestorAlreadyFriendsWithReciever) {
+      throw new BadRequestException(
+        `${requestorId} is already friends with ${recieverId}`,
+      )
+    }
+
+    const newRequestor = await this.userModel.findByIdAndUpdate(requestorId, {
+      $push: { following: recieverId },
+    })
+    const newReciever = await this.userModel.findByIdAndUpdate(recieverId, {
+      $push: { followers: requestorId },
+    })
+
+    return { newRequestor, newReciever }
+  }
+
+  async friendConfirm({ requestorId, recieverId }) {
+    // const requestor = this.userModel.findById(requestorId)
+    // const reciever = this.userModel.findById(recieverId)
+  }
 }
 
 function errCallback(err) {

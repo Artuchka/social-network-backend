@@ -98,6 +98,39 @@ export class User {
   })
   posts: Post[]
 
+  @Prop({
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+    default: [],
+  })
+  friends: User[]
+
+  @Prop({
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+    default: [],
+  })
+  following: User[]
+
+  @Prop({
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+    default: [],
+  })
+  followers: User[]
+
   id: string
   fullname: string
 }

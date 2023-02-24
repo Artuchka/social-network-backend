@@ -107,6 +107,12 @@ export class AdditionalUserInfo {
   birthday: Date
 
   @ApiPropertyOptional({
+    example: 'img-src.com/1',
+  })
+  @IsString()
+  avatar: string
+
+  @ApiPropertyOptional({
     // example: 'St. Petersburg',
   })
   @IsObject()
@@ -114,10 +120,4 @@ export class AdditionalUserInfo {
   @ValidateNested({ each: true })
   @Type(() => LocationDto)
   location: LocationDto
-
-  @ApiPropertyOptional({
-    example: 'img-src.com/1',
-  })
-  @IsString()
-  avatar: string
 }
