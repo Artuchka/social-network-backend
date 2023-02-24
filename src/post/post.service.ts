@@ -4,13 +4,13 @@ import { Model } from 'mongoose'
 import { PostDocument } from './post.schema'
 import { NewPostDto } from './dto/new-post.dto'
 import { UpdatePostDto } from './dto/update-post.dto'
-import { UserService } from '../user/services/user.service'
+import { UserEntriesService } from '../user/services/user-entries.service'
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectModel('Post') private readonly postModel: Model<PostDocument>,
-    private readonly userService: UserService,
+    private readonly userEntriesService: UserEntriesService,
   ) {}
 
   async getAll() {
@@ -27,6 +27,7 @@ export class PostService {
 
   async create({ userId, dto }: { userId: string; dto: NewPostDto }) {
     const newPost = await this.postModel.create({ ...dto, author: userId })
+    this.userEntriesService._addPost({ postId: newPost.id, authorId: userId })
 
     return newPost
   }
@@ -42,6 +43,10 @@ export class PostService {
       throw new NotFoundException(`You are not the owner of this Post`)
     }
 
+    this.userEntriesService._removePost({
+      postId: foundPost.id,
+      authorId: userId,
+    })
     await foundPost.delete()
 
     return foundPost

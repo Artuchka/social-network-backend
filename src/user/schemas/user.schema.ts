@@ -4,6 +4,8 @@ import { Role } from '../enums/role.enum'
 import { Gender } from '../enums/gender.enum'
 import { Post } from 'src/post/post.schema'
 import { Location, LocationSchema } from './location.schema'
+import { Photo } from '../../photo/photo.schema'
+import { UserEntries } from '../../schemas/user-entries.schema'
 
 // export interface IUserDocuemnt extends User, Document {}
 // export type UserDocument = HydratedDocument<User>
@@ -84,23 +86,8 @@ export class User {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Photo',
-    default: '',
   })
-  avatar: string
-  // export type Photo = Entry & {
-  //   path: string;
-  // };
-
-  @Prop({
-    type: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Post',
-      },
-    ],
-    default: [],
-  })
-  posts: Post[]
+  avatar: Photo
 
   @Prop({
     type: [
@@ -134,6 +121,16 @@ export class User {
     default: [],
   })
   followers: User[]
+
+  @Prop({
+    type: UserEntries,
+    default: {
+      posts: [],
+      comments: [],
+      photos: [],
+    },
+  })
+  entries: UserEntries
 
   id: string
   fullname: string

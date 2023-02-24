@@ -109,29 +109,6 @@ export class UserService {
         return this.userModel.db.dropCollection('photos', errCallback)
     }
   }
-
-  async addPost({ postId, authorId }) {
-    const user = await this.userModel.findByIdAndUpdate(
-      authorId,
-      {
-        $push: { posts: postId },
-      },
-      {
-        upsert: true,
-        new: true,
-      },
-    )
-  }
-
-  async removePost({ postId, authorId }) {
-    const user = await this.userModel.findByIdAndUpdate(
-      authorId,
-      {
-        $pull: { posts: postId },
-      },
-      { new: true },
-    )
-  }
 }
 
 function errCallback(err) {
