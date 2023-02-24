@@ -142,5 +142,5 @@ UserSchema.virtual('id').get(function (this: UserDocument) {
 })
 
 UserSchema.virtual('fullname').get(function (this: UserDocument) {
-  return `${this.firstname} ${this.lastname}`.trim()
+  return `${this.firstname || ''} ${this.lastname || ''}`.trim()
 })

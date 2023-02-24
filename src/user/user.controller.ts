@@ -61,6 +61,9 @@ export class UserController {
     @Body('recieverId') recieverId: string,
     @User('id') currentUserId: string,
   ) {
+    if (requestorId === recieverId) {
+      throw new ForbiddenException('Please provide varying ids')
+    }
     if (currentUserId !== requestorId) {
       throw new ForbiddenException('You are not logged in as requestor')
     }
@@ -80,6 +83,9 @@ export class UserController {
     @Body('confirmerId') confirmerId: string,
     @User('id') currentUserId: string,
   ) {
+    if (requestorId === confirmerId) {
+      throw new ForbiddenException('Please provide varying ids')
+    }
     if (currentUserId !== confirmerId) {
       throw new ForbiddenException('You are not logged in as confirmer')
     }
@@ -91,6 +97,74 @@ export class UserController {
     )
 
     return { message: 'friend request confirmed', newConfirmer, newRequestor }
+  }
+
+  @Post('/removeFriend')
+  @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Removing friend' })
+  async removeFriend(
+    @Body('removerId') removerId: string,
+    @Body('removingId') removingId: string,
+    @User('id') currentUserId: string,
+  ) {
+    if (removingId === removerId) {
+      throw new ForbiddenException('Please provide varying ids')
+    }
+    if (currentUserId !== removerId) {
+      throw new ForbiddenException('You are not logged in as remover')
+    }
+    const { newRemover, newRemoving } = await this.userService.removeFriend({
+      removerId,
+      removingId,
+    })
+
+    return { message: 'friend removed', newRemover, newRemoving }
+  }
+
+  @Post('/cancelFriendRequest')
+  @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Canceling friend request from requestor' })
+  async cancelFriendRequest(
+    @Body('cancelerId') cancelerId: string,
+    @Body('cancelingId') cancelingId: string,
+    @User('id') currentUserId: string,
+  ) {
+    if (cancelerId === cancelingId) {
+      throw new ForbiddenException('Please provide varying ids')
+    }
+    if (currentUserId !== cancelerId) {
+      throw new ForbiddenException('You are not logged in as canceler')
+    }
+    const { newCanceler, newCanceling } =
+      await this.userService.cancelFriendRequest({
+        cancelerId,
+        cancelingId,
+      })
+
+    return { message: 'friend request canceled', newCanceler, newCanceling }
+  }
+
+  @Post('/declineFriendRequest')
+  @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Declining friend request from reciever(decliner)' })
+  async declineFriendRequest(
+    @Body('declinerId') declinerId: string,
+    @Body('requestorId') requestorId: string,
+    @User('id') currentUserId: string,
+  ) {
+    if (declinerId === requestorId) {
+      throw new ForbiddenException('Please provide varying ids')
+    }
+    if (currentUserId !== declinerId) {
+      throw new ForbiddenException('You are not logged in as decliner')
+    }
+    const { newDecliner, newRequestor } =
+      await this.userService.declineFriendRequest({
+        declinerId,
+        requestorId,
+      })
+
+    return { message: 'friend request declined', newDecliner, newRequestor }
   }
 
   @Delete('/drop/:name')

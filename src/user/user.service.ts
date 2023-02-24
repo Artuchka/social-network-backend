@@ -136,7 +136,7 @@ export class UserService {
 
     if (!requestor || !reciever) {
       throw new BadRequestException(
-        `${requestorId} or ${recieverId} is not a member of social network`,
+        `${requestorId} or/and ${recieverId} is not a member of social network`,
       )
     }
 
@@ -187,13 +187,89 @@ export class UserService {
     return { newRequestor, newReciever }
   }
 
+  async cancelFriendRequest({ cancelerId, cancelingId }) {
+    const canceler = await this.userModel.findById(cancelerId)
+    const canceling = await this.userModel.findById(cancelingId)
+
+    if (!canceler || !canceling) {
+      throw new BadRequestException(
+        `${cancelerId} or/and ${cancelingId} is not a member of social network`,
+      )
+    }
+
+    const cancelerIsFollowingCancelling =
+      canceler.following.includes(cancelingId) &&
+      canceling.followers.includes(cancelerId)
+
+    console.log({ cancelerIsFollowingCancelling })
+
+    if (!cancelerIsFollowingCancelling) {
+      throw new BadRequestException(`Cancelor is NOT following canceling`)
+    }
+
+    const newCanceler = await this.userModel.findByIdAndUpdate(
+      cancelerId,
+      {
+        $pull: { following: cancelingId },
+      },
+      { new: true },
+    )
+    const newCanceling = await this.userModel.findByIdAndUpdate(
+      cancelingId,
+      {
+        $pull: { followers: cancelerId },
+      },
+      { new: true },
+    )
+
+    return { newCanceler, newCanceling }
+  }
+
+  async declineFriendRequest({ declinerId, requestorId }) {
+    const decliner = await this.userModel.findById(declinerId)
+    const requestor = await this.userModel.findById(requestorId)
+
+    if (!decliner || !requestor) {
+      throw new BadRequestException(
+        `${declinerId} or/and ${requestorId} is not a member of social network`,
+      )
+    }
+
+    const requestorIsFollowingDecliner =
+      requestor.following.includes(declinerId) &&
+      decliner.followers.includes(requestorId)
+
+    console.log({ requestorIsFollowingDecliner })
+
+    if (!requestorIsFollowingDecliner) {
+      throw new BadRequestException(`Requestor is NOT following decliner`)
+    }
+
+    const newDecliner = await this.userModel.findByIdAndUpdate(
+      declinerId,
+      {
+        $pull: { followers: requestorId },
+      },
+      { new: true },
+    )
+    const newRequestor = await this.userModel.findByIdAndUpdate(
+      requestorId,
+      {
+        $pull: { following: declinerId },
+      },
+      { new: true },
+    )
+
+    return { newDecliner, newRequestor }
+  }
+
   async friendConfirm({ requestorId, confirmerId }) {
     const requestor = await this.userModel.findById(requestorId)
     const confirmer = await this.userModel.findById(confirmerId)
 
     if (!requestor || !confirmer) {
       throw new BadRequestException(
-        `${requestorId} or ${confirmerId} is not a member of social network`,
+        `${requestorId} or/and ${confirmerId} is not a member of social network`,
       )
     }
 
@@ -209,7 +285,7 @@ export class UserService {
       requestor.followers.includes(confirmerId)
     if (confirmerIsFollowingRequestor) {
       throw new BadRequestException(
-        `Confirmer is already following requestor. Please, send /friendConfirm from requestor`,
+        `Confirmer is following requestor. Please, send /friendConfirm from requestor`,
       )
     }
 
@@ -243,6 +319,44 @@ export class UserService {
       { new: true },
     )
     return { newRequestor, newConfirmer }
+  }
+
+  async removeFriend({ removerId, removingId }) {
+    const remover = await this.userModel.findById(removerId)
+    const removing = await this.userModel.findById(removingId)
+
+    if (!remover || !removing) {
+      throw new BadRequestException(
+        `${removerId} or/and ${removingId} is not a member of social network`,
+      )
+    }
+
+    const removerIsFriendsWithRemoving =
+      remover.friends.includes(removingId) &&
+      removing.friends.includes(removerId)
+    if (!removerIsFriendsWithRemoving) {
+      throw new BadRequestException(`Remover and Removing are NOT friends`)
+    }
+
+    console.log({ removerIsFriendsWithRemoving })
+
+    const newRemover = await this.userModel.findByIdAndUpdate(
+      removerId,
+      {
+        $pull: { friends: removingId },
+        $push: { followers: removingId },
+      },
+      { new: true },
+    )
+    const newRemoving = await this.userModel.findByIdAndUpdate(
+      removingId,
+      {
+        $pull: { friends: removerId },
+        $push: { following: removerId },
+      },
+      { new: true },
+    )
+    return { newRemover, newRemoving }
   }
 }
 
