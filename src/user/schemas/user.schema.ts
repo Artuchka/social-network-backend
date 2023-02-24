@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import mongoose, { Document, HydratedDocument } from 'mongoose'
-import { Role } from '../role.enum'
-import { Gender } from '../gender.enum'
+import { Role } from '../enums/role.enum'
+import { Gender } from '../enums/gender.enum'
 import { Post } from 'src/post/post.schema'
 import { Location, LocationSchema } from './location.schema'
 
@@ -82,10 +82,14 @@ export class User {
   location: Location
 
   @Prop({
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Photo',
     default: '',
   })
   avatar: string
+  // export type Photo = Entry & {
+  //   path: string;
+  // };
 
   @Prop({
     type: [

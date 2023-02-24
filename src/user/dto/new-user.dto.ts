@@ -15,8 +15,8 @@ import {
   ValidateIf,
   ValidateNested,
 } from 'class-validator'
-import { Role } from '../role.enum'
-import { Gender } from '../gender.enum'
+import { Role } from '../enums/role.enum'
+import { Gender } from '../enums/gender.enum'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { LocationSchema } from '../schemas/location.schema'
 import { Location } from '../schemas/location.schema'

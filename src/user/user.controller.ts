@@ -10,8 +10,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common'
-import { UserService } from './user.service'
-import { Role } from './role.enum'
+import { UserService } from './services/user.service'
 import { User } from './decorators/user.decorator'
 import { UserDetails } from './user-details.interface'
 import { UpdateUserDto } from './dto/update-user.dto'
@@ -25,11 +24,16 @@ import { UserSchema } from './schemas/user.schema'
 import { JwtGuard } from '../auth/guards/jwt.guard'
 import { Roles } from '../auth/decorators/role.decorator'
 import { RolesGuard } from '../auth/guards/roles.guard'
+import { FriendService } from './services/friend.service'
+import { Role } from './enums/role.enum'
 
 @ApiTags('User')
 @Controller('user')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private friendService: FriendService,
+  ) {}
 
   @Get()
   @UseGuards(JwtGuard, RolesGuard)
@@ -67,10 +71,11 @@ export class UserController {
     if (currentUserId !== requestorId) {
       throw new ForbiddenException('You are not logged in as requestor')
     }
-    const { newRequestor, newReciever } = await this.userService.friendRequest({
-      requestorId,
-      recieverId,
-    })
+    const { newRequestor, newReciever } =
+      await this.friendService.friendRequest({
+        requestorId,
+        recieverId,
+      })
 
     return { message: 'friend request sent', newReciever, newRequestor }
   }
@@ -89,12 +94,11 @@ export class UserController {
     if (currentUserId !== confirmerId) {
       throw new ForbiddenException('You are not logged in as confirmer')
     }
-    const { newRequestor, newConfirmer } = await this.userService.friendConfirm(
-      {
+    const { newRequestor, newConfirmer } =
+      await this.friendService.friendConfirm({
         requestorId,
         confirmerId,
-      },
-    )
+      })
 
     return { message: 'friend request confirmed', newConfirmer, newRequestor }
   }
@@ -113,7 +117,7 @@ export class UserController {
     if (currentUserId !== removerId) {
       throw new ForbiddenException('You are not logged in as remover')
     }
-    const { newRemover, newRemoving } = await this.userService.removeFriend({
+    const { newRemover, newRemoving } = await this.friendService.removeFriend({
       removerId,
       removingId,
     })
@@ -136,7 +140,7 @@ export class UserController {
       throw new ForbiddenException('You are not logged in as canceler')
     }
     const { newCanceler, newCanceling } =
-      await this.userService.cancelFriendRequest({
+      await this.friendService.cancelFriendRequest({
         cancelerId,
         cancelingId,
       })
@@ -159,7 +163,7 @@ export class UserController {
       throw new ForbiddenException('You are not logged in as decliner')
     }
     const { newDecliner, newRequestor } =
-      await this.userService.declineFriendRequest({
+      await this.friendService.declineFriendRequest({
         declinerId,
         requestorId,
       })
