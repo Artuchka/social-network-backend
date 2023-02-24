@@ -20,7 +20,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger'
-import { UserSchema } from './user.schema'
+import { UserSchema } from './schemas/user.schema'
 import { JwtGuard } from '../auth/guards/jwt.guard'
 import { Roles } from '../auth/decorators/role.decorator'
 import { RolesGuard } from '../auth/guards/roles.guard'

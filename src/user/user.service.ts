@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import mongoose, { Model } from 'mongoose'
-import { User, UserDocument } from './user.schema'
+import { User, UserDocument } from './schemas/user.schema'
 import { UserDetails } from './user-details.interface'
 import { NewUserDto } from './dto/new-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
@@ -83,7 +83,13 @@ export class UserService {
         )
       }
 
-      foundUser[key] = dto[key]
+      if (key === 'location') {
+        Object.keys(dto[key]).forEach((subkey) => {
+          foundUser[key][subkey] = dto[key][subkey]
+        })
+      } else {
+        foundUser[key] = dto[key]
+      }
     })
     await foundUser.save()
 

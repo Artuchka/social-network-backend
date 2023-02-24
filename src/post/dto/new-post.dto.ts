@@ -7,7 +7,7 @@ import {
   isArray,
 } from 'class-validator'
 import mongoose, { SchemaTypes } from 'mongoose'
-import { User } from 'src/user/user.schema'
+import { User } from 'src/user/schemas/user.schema'
 
 export class NewPostDto {
   @ApiProperty({

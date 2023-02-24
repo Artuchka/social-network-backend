@@ -25,7 +25,12 @@ async function bootstrap() {
   app.setGlobalPrefix('api')
   app.enableCors()
   app.use(cookieParser(process.env.SECRET))
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }))
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidUnknownValues: true,
+    }),
+  )
 
   const config = new DocumentBuilder()
     .setTitle('Zavod')

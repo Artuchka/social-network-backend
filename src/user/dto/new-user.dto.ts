@@ -2,16 +2,37 @@ import {
   ArrayMinSize,
   IsArray,
   IsDate,
+  IsDateString,
   IsDefined,
   IsEmail,
   IsEnum,
   IsIn,
+  IsNotEmpty,
+  IsNotEmptyObject,
+  IsObject,
   IsOptional,
   IsString,
+  ValidateIf,
+  ValidateNested,
 } from 'class-validator'
 import { Role } from '../role.enum'
 import { Gender } from '../gender.enum'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { LocationSchema } from '../schemas/location.schema'
+import { Location } from '../schemas/location.schema'
+import { Type } from 'class-transformer'
+
+export class LocationDto {
+  @IsOptional()
+  readonly city: string
+  @IsOptional()
+  readonly country: string
+  @IsOptional()
+  readonly coordinates: {
+    x: string
+    y: string
+  }
+}
 
 export class NewUserDto {
   @ApiProperty({
@@ -82,14 +103,17 @@ export class AdditionalUserInfo {
   @ApiPropertyOptional({
     example: '01.01.1999',
   })
-  @IsDate()
+  @IsDateString()
   birthday: Date
 
   @ApiPropertyOptional({
-    example: 'St. Petersburg',
+    // example: 'St. Petersburg',
   })
-  @IsString()
-  location: string
+  @IsObject()
+  @IsNotEmptyObject()
+  @ValidateNested({ each: true })
+  @Type(() => LocationDto)
+  location: LocationDto
 
   @ApiPropertyOptional({
     example: 'img-src.com/1',

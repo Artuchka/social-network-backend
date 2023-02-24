@@ -1,8 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import mongoose, { Document, HydratedDocument } from 'mongoose'
-import { Role } from './role.enum'
-import { Gender } from './gender.enum'
+import { Role } from '../role.enum'
+import { Gender } from '../gender.enum'
 import { Post } from 'src/post/post.schema'
+import { Location, LocationSchema } from './location.schema'
 
 // export interface IUserDocuemnt extends User, Document {}
 // export type UserDocument = HydratedDocument<User>
@@ -68,10 +69,17 @@ export class User {
   birthday: Date
 
   @Prop({
-    type: String,
-    default: '',
+    type: LocationSchema,
+    default: {
+      city: '',
+      country: '',
+      coordinates: {
+        x: '',
+        y: '',
+      },
+    },
   })
-  location: string
+  location: Location
 
   @Prop({
     type: String,
@@ -91,7 +99,7 @@ export class User {
   posts: Post[]
 
   id: string
-  fullName: string
+  fullname: string
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
@@ -101,5 +109,5 @@ UserSchema.virtual('id').get(function (this: UserDocument) {
 })
 
 UserSchema.virtual('fullname').get(function (this: UserDocument) {
-  return `${this.firstname} ${this.lastname}`
+  return `${this.firstname} ${this.lastname}`.trim()
 })
