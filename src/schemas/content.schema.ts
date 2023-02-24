@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Photo } from '../photo/photo.schema'
 import mongoose from 'mongoose'
 
-@Schema()
+@Schema({ timestamps: { updatedAt: true, createdAt: false } })
 export class Content {
   @Prop({
     type: String,

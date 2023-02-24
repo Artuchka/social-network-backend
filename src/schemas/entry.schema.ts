@@ -1,17 +1,17 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import mongoose, { HydratedDocument } from 'mongoose'
+import mongoose, { HydratedDocument, ObjectId } from 'mongoose'
 import { User } from '../user/schemas/user.schema'
 
 export type EntryDocument = HydratedDocument<Entry>
 
-@Schema({ timestamps: true })
+@Schema()
 export class Entry {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
   })
-  author: User
+  author: User | string
 
   @Prop({
     type: [
@@ -45,8 +45,6 @@ export class Entry {
     default: [],
   })
   comments: Comment[]
-
-  likes: number
 }
 
 export const EntrySchema = SchemaFactory.createForClass(Entry)

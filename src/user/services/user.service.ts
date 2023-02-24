@@ -36,9 +36,8 @@ export class UserService {
   }
 
   async getSingleById(id: string): Promise<UserDocument> {
-    const user = await this.userModel
-      .findById(id)
-      .populate({ path: 'posts', select: 'text liked disliked' })
+    const user = await this.userModel.findById(id)
+
     return user
   }
 
@@ -104,6 +103,10 @@ export class UserService {
         return this.userModel.db.dropCollection('users', errCallback)
       case 'post':
         return this.userModel.db.dropCollection('posts', errCallback)
+      case 'comment':
+        return this.userModel.db.dropCollection('comments', errCallback)
+      case 'photo':
+        return this.userModel.db.dropCollection('photos', errCallback)
     }
   }
 

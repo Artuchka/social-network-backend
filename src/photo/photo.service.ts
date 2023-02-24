@@ -37,7 +37,7 @@ export class PhotoService {
   }
 
   async deleteSingle({ photoId, userId }: { photoId: string; userId: string }) {
-    const foundPhoto = await this.photoModel.findOne({ id: photoId })
+    const foundPhoto = await this.photoModel.findById(photoId)
 
     if (!foundPhoto) {
       throw new NotFoundException(`No Photo with id ${photoId} `)
@@ -61,7 +61,7 @@ export class PhotoService {
     dto: UpdatePhotoDto
     userId: string
   }) {
-    const foundPhoto = await this.photoModel.findOne({ id: photoId })
+    const foundPhoto = await this.photoModel.findById(photoId)
 
     if (!foundPhoto) {
       throw new NotFoundException(`No Photo with id ${photoId} `)
