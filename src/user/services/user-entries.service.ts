@@ -55,4 +55,59 @@ export class UserEntriesService {
       { new: true },
     )
   }
+
+  async _addLikeOnPost({ postId, authorId }) {
+    this._entryLikesAdder({ entryId: postId, authorId, entryName: 'posts' })
+  }
+
+  async _removeLikeOnPost({ postId, authorId }) {
+    this._entryLikesRemover({ entryId: postId, authorId, entryName: 'posts' })
+  }
+
+  async _addLikeOnComment({ commentId, authorId }) {
+    this._entryLikesAdder({
+      entryId: commentId,
+      authorId,
+      entryName: 'comments',
+    })
+  }
+
+  async _removeLikeOnComment({ commentId, authorId }) {
+    this._entryLikesRemover({
+      entryId: commentId,
+      authorId,
+      entryName: 'comments',
+    })
+  }
+
+  async _addLikeOnPhoto({ photoId, authorId }) {
+    this._entryLikesAdder({ entryId: photoId, authorId, entryName: 'photos' })
+  }
+
+  async _removeLikeOnPhoto({ photoId, authorId }) {
+    this._entryLikesRemover({ entryId: photoId, authorId, entryName: 'photos' })
+  }
+
+  async _entryLikesAdder({ entryId, authorId, entryName }) {
+    const user = await this.userModel.findByIdAndUpdate(
+      authorId,
+      {
+        $push: { [`likes.${entryName}`]: entryId },
+      },
+      {
+        upsert: true,
+        new: true,
+      },
+    )
+  }
+
+  async _entryLikesRemover({ entryId, authorId, entryName }) {
+    const user = await this.userModel.findByIdAndUpdate(
+      authorId,
+      {
+        $pull: { [`likes.${entryName}`]: entryId },
+      },
+      { new: true },
+    )
+  }
 }

@@ -88,6 +88,11 @@ export class PostService {
         new: true,
       },
     )
+
+    this.userEntriesService._addLikeOnPost({
+      postId: updatedPost.id,
+      authorId: userId,
+    })
     return updatedPost
   }
 
@@ -99,6 +104,11 @@ export class PostService {
         new: true,
       },
     )
+
+    this.userEntriesService._removeLikeOnPost({
+      postId: updatedPost.id,
+      authorId: userId,
+    })
     return updatedPost
   }
 }

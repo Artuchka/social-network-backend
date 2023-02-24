@@ -90,6 +90,11 @@ export class PhotoService {
         new: true,
       },
     )
+
+    this.userEntriesService._addLikeOnPhoto({
+      photoId: updatedPhoto.id,
+      authorId: userId,
+    })
     return updatedPhoto
   }
 
@@ -101,6 +106,11 @@ export class PhotoService {
         new: true,
       },
     )
+
+    this.userEntriesService._removeLikeOnPhoto({
+      photoId: updatedPhoto.id,
+      authorId: userId,
+    })
     return updatedPhoto
   }
 }

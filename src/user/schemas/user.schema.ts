@@ -132,6 +132,16 @@ export class User {
   })
   entries: UserEntries
 
+  @Prop({
+    type: UserEntries,
+    default: {
+      posts: [],
+      comments: [],
+      photos: [],
+    },
+  })
+  likes: UserEntries
+
   id: string
   fullname: string
 }

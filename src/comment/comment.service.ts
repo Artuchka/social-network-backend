@@ -102,6 +102,11 @@ export class CommentService {
         new: true,
       },
     )
+
+    this.userEntriesService._addLikeOnComment({
+      commentId: updatedComment.id,
+      authorId: userId,
+    })
     return updatedComment
   }
 
@@ -113,6 +118,11 @@ export class CommentService {
         new: true,
       },
     )
+
+    this.userEntriesService._removeLikeOnComment({
+      commentId: updatedComment.id,
+      authorId: userId,
+    })
     return updatedComment
   }
 }
