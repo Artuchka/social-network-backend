@@ -1,6 +1,5 @@
 import { IntersectionType, OmitType, PartialType } from '@nestjs/swagger'
 import { NewPostDto } from './new-post.dto'
-import { NewContentDto } from '../../dto/new-content.dto'
 import { IsOptional } from 'class-validator'
 import { Type } from 'class-transformer'
 import { UpdateContentDto } from '../../dto/update-content.dto'

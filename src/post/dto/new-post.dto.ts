@@ -24,6 +24,9 @@ export class NewPostDto {
   // @IsDefined()
   // author: string
 
+  @ApiProperty({
+    description: 'contents of comment',
+  })
   @IsObject()
   @IsNotEmptyObject()
   @ValidateNested({ each: true })

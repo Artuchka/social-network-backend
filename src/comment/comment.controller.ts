@@ -10,12 +10,13 @@ import {
   UseGuards,
 } from '@nestjs/common'
 import { CommentService } from './comment.service'
-import { ApiOperation } from '@nestjs/swagger'
+import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { NewCommentDto } from './dto/new-comment.dto'
 import { UpdateCommentDto } from './dto/update-comment.dto'
 import { JwtGuard } from '../auth/guards/jwt.guard'
 import { User } from '../user/decorators/user.decorator'
 
+@ApiTags('Comment')
 @Controller('comment')
 export class CommentController {
   constructor(private commentService: CommentService) {}

@@ -10,12 +10,13 @@ import {
   UseGuards,
 } from '@nestjs/common'
 import { JwtGuard } from '../auth/guards/jwt.guard'
-import { ApiOperation } from '@nestjs/swagger'
+import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { User } from '../user/decorators/user.decorator'
 import { PhotoService } from './photo.service'
 import { NewPhotoDto } from './dto/new-photo.dto'
 import { UpdatePhotoDto } from './dto/update-photo.dto'
 
+@ApiTags('Photo')
 @Controller('photo')
 export class PhotoController {
   constructor(private photoService: PhotoService) {}

@@ -52,6 +52,9 @@ export class NewCommentDto {
   @IsDefined()
   sourceType: string
 
+  @ApiProperty({
+    description: 'contents of comment',
+  })
   @IsObject()
   @IsNotEmptyObject()
   @ValidateNested({ each: true })
