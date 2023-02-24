@@ -1,17 +1,17 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { Model } from 'mongoose'
 import { CommentDocument } from './comment.schema'
-import { UserService } from '../user/services/user.service'
 import { InjectModel } from '@nestjs/mongoose'
 import { NewCommentDto } from './dto/new-comment.dto'
 import { UpdateCommentDto } from './dto/update-comment.dto'
+import { UserEntriesService } from '../user/services/user-entries.service'
 
 @Injectable()
 export class CommentService {
   constructor(
     @InjectModel('Comment')
     private readonly commentModel: Model<CommentDocument>,
-    private readonly userService: UserService,
+    private readonly userEntriesService: UserEntriesService,
   ) {}
 
   async getAll() {
@@ -30,11 +30,12 @@ export class CommentService {
   }
 
   async create({ dto, userId }: { dto: NewCommentDto; userId: string }) {
-    console.log({ dto })
-
     const comment = await this.commentModel.create({ ...dto, author: userId })
 
-    // this.userService.addComment({ authorId, CommentId: comment.id })
+    this.userEntriesService._addComment({
+      authorId: userId,
+      commentId: comment.id,
+    })
 
     return comment
   }
@@ -56,6 +57,10 @@ export class CommentService {
       throw new NotFoundException(`You are not the owner of this Comment`)
     }
 
+    this.userEntriesService._removeComment({
+      authorId: userId,
+      commentId,
+    })
     await foundComment.delete()
 
     return foundComment

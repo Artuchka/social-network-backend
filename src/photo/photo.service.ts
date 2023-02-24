@@ -48,7 +48,8 @@ export class PhotoService {
     if (foundPhoto.author.toString() !== userId) {
       throw new NotFoundException(` your are not the owner of this photo`)
     }
-    this.userEntriesService._addPhoto({
+
+    this.userEntriesService._removePhoto({
       authorId: userId,
       photoId: photoId,
     })
