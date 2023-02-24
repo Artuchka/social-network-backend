@@ -1,17 +1,17 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { PhotoDocument } from './photo.schema'
-import { UserService } from '../user/services/user.service'
 import mongoose, { Model, ObjectId, SchemaTypes } from 'mongoose'
 import { NewPhotoDto } from './dto/new-photo.dto'
 import { UpdatePhotoDto } from './dto/update-photo.dto'
+import { UserEntriesService } from '../user/services/user-entries.service'
 
 @Injectable()
 export class PhotoService {
   constructor(
     @InjectModel('Photo')
     private readonly photoModel: Model<PhotoDocument>,
-    private readonly userService: UserService,
+    private readonly userEntriesService: UserEntriesService,
   ) {}
 
   async getAll() {
@@ -31,7 +31,10 @@ export class PhotoService {
 
     const newPhoto = await this.photoModel.create({ ...dto, author })
 
-    // this.userService.addPhoto({ authorId, PhotoId: newPhoto.id })
+    this.userEntriesService._addPhoto({
+      authorId: author,
+      photoId: newPhoto.id,
+    })
 
     return newPhoto
   }
@@ -45,9 +48,11 @@ export class PhotoService {
     if (foundPhoto.author.toString() !== userId) {
       throw new NotFoundException(` your are not the owner of this photo`)
     }
-
+    this.userEntriesService._addPhoto({
+      authorId: userId,
+      photoId: photoId,
+    })
     await foundPhoto.delete()
-    // this.userService.removePhoto({ authorId, PhotoId: deletedPhoto.id })
 
     return foundPhoto
   }
