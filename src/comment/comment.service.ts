@@ -15,76 +15,99 @@ export class CommentService {
   ) {}
 
   async getAll() {
-    const posts = await this.commentModel.find()
+    const comment = await this.commentModel.find()
 
-    return posts
+    return comment
   }
 
   async getSingle(id: string) {
-    const post = await this.commentModel.findById(id)
+    const comment = await this.commentModel.findById(id)
 
-    return post
+    if (!comment) {
+      throw new NotFoundException(`Comment ${id} not found`)
+    }
+    return comment
   }
 
-  async create(dto: NewCommentDto) {
-    const { author } = dto
+  async create({ dto, userId }: { dto: NewCommentDto; userId: string }) {
     console.log({ dto })
 
-    const newPost = await this.commentModel.create(dto)
+    const comment = await this.commentModel.create({ ...dto, author: userId })
 
-    // this.userService.addPost({ authorId, postId: newPost.id })
+    // this.userService.addComment({ authorId, CommentId: comment.id })
 
-    return newPost
+    return comment
   }
 
-  async deleteSingle(id: string) {
-    const deletedPost = await this.commentModel.findByIdAndDelete(id)
-    if (!deletedPost) {
-      throw new NotFoundException(`No post with id ${id}`)
+  async deleteSingle({
+    commentId,
+    userId,
+  }: {
+    commentId: string
+    userId: string
+  }) {
+    const foundComment = await this.commentModel.findById(commentId)
+
+    if (!foundComment) {
+      throw new NotFoundException(`No Comment with id ${commentId}`)
     }
 
-    const author = deletedPost.author
-    // this.userService.removePost({ authorId, postId: deletedPost.id })
+    if (foundComment.author.toString() !== userId) {
+      throw new NotFoundException(`You are not the owner of this Comment`)
+    }
 
-    return deletedPost
+    await foundComment.delete()
+
+    return foundComment
   }
 
-  async updateSingle(id: string, dto: UpdateCommentDto) {
-    const updateData = Object.keys(dto).map((key) => ({
-      $set: {
-        [key]: dto[key],
-      },
-    }))
+  async updateSingle({
+    commentId,
+    dto,
+    userId,
+  }: {
+    commentId: string
+    userId: string
+    dto: UpdateCommentDto
+  }) {
+    const foundComment = await this.commentModel.findById(commentId)
 
-    const updatedPost = await this.commentModel.findByIdAndUpdate(
-      id,
-      updateData,
-      {
-        new: true,
-      },
-    )
-    return updatedPost
+    if (!foundComment) {
+      throw new NotFoundException(`No Comment with id ${commentId} `)
+    }
+
+    if (foundComment.author.toString() !== userId) {
+      throw new NotFoundException(`You are not the owner of this Comment`)
+    }
+
+    Object.keys(dto).map((key) => {
+      foundComment[key] = dto[key]
+    })
+
+    await foundComment.save()
+
+    return foundComment
   }
 
   async like(id: string, userId: string) {
-    const updatedPost = await this.commentModel.findOneAndUpdate(
+    const updatedComment = await this.commentModel.findOneAndUpdate(
       { _id: id, liked: { $ne: userId } },
       { $push: { liked: userId }, $pull: { disliked: userId } },
       {
         new: true,
       },
     )
-    return updatedPost
+    return updatedComment
   }
 
   async dislike(id: string, userId: string) {
-    const updatedPost = await this.commentModel.findOneAndUpdate(
+    const updatedComment = await this.commentModel.findOneAndUpdate(
       { _id: id, disliked: { $ne: userId } },
       { $push: { disliked: userId }, $pull: { liked: userId } },
       {
         new: true,
       },
     )
-    return updatedPost
+    return updatedComment
   }
 }

@@ -6,7 +6,7 @@ import { Type } from 'class-transformer'
 import { UpdateContentDto } from '../../dto/update-content.dto'
 
 export class UpdateCommentDto extends PartialType(
-  OmitType(NewCommentDto, ['author', 'reply', 'source', 'sourceType'] as const),
+  OmitType(NewCommentDto, ['reply', 'source', 'sourceType'] as const),
 ) {
   @IsOptional()
   @Type(() => UpdateContentDto)

@@ -43,9 +43,10 @@ export class CommentController {
   }
 
   @Post()
+  @UseGuards(JwtGuard)
   @ApiOperation({ summary: 'Create a comment' })
-  async create(@Body() dto: NewCommentDto) {
-    const comment = await this.commentService.create(dto)
+  async create(@Body() dto: NewCommentDto, @User('id') userId: string) {
+    const comment = await this.commentService.create({ dto, userId })
 
     return {
       message: 'created comment',
@@ -54,9 +55,16 @@ export class CommentController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtGuard)
   @ApiOperation({ summary: 'Delete comment' })
-  async deleteSingle(@Param('id') commentId: string) {
-    const comment = await this.commentService.deleteSingle(commentId)
+  async deleteSingle(
+    @Param('id') commentId: string,
+    @User('id') userId: string,
+  ) {
+    const comment = await this.commentService.deleteSingle({
+      commentId,
+      userId,
+    })
 
     return {
       message: 'deleted comment',
@@ -65,9 +73,18 @@ export class CommentController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtGuard)
   @ApiOperation({ summary: 'Update comment' })
-  async updateSingle(@Param('id') id: string, @Body() dto: UpdateCommentDto) {
-    const comment = await this.commentService.updateSingle(id, dto)
+  async updateSingle(
+    @Param('id') commentId: string,
+    @Body() dto: UpdateCommentDto,
+    @User('id') userId: string,
+  ) {
+    const comment = await this.commentService.updateSingle({
+      commentId,
+      dto,
+      userId,
+    })
 
     return {
       message: 'updated comment',
