@@ -32,27 +32,35 @@ export class PostController {
     }
   }
 
+  @Get(':id')
+  @ApiOperation({ summary: 'Get all posts' })
+  async getSingle(@Param('id') id: string) {
+    const post = await this.postService.getSingle(id)
+
+    return {
+      message: 'single post',
+      post,
+    }
+  }
+
   @Post()
   @ApiOperation({ summary: 'Create a post' })
   async create(@Body() dto: NewPostDto) {
     const post = await this.postService.create(dto)
 
     return {
-      message: 'created',
+      message: 'created post',
       post,
     }
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete post' })
-  async deleteSingle(
-    @Param('id') postId: string,
-    @Body('authorId') authorId: string,
-  ) {
-    const post = await this.postService.deleteSingle(postId, authorId)
+  async deleteSingle(@Param('id') postId: string) {
+    const post = await this.postService.deleteSingle(postId)
 
     return {
-      message: 'deleted',
+      message: 'deleted post',
       post,
     }
   }
@@ -77,11 +85,13 @@ export class PostController {
     console.log({ post })
 
     if (!post) {
-      throw new BadRequestException(`Alrady liked by ${userId} OR no such post`)
+      throw new BadRequestException(
+        `Alrady liked by ${userId} OR post doesnot exist`,
+      )
     }
 
     return {
-      message: 'updated',
+      message: 'liked post',
       post,
     }
   }
@@ -97,7 +107,7 @@ export class PostController {
     }
 
     return {
-      message: 'updated',
+      message: 'disliked post',
       post,
     }
   }

@@ -19,26 +19,40 @@ export class PostService {
     return posts
   }
 
+  async getSingle(id: string) {
+    const post = await this.postModel.findById(id)
+
+    return post
+  }
+
   async create(dto: NewPostDto) {
-    const { authorId } = dto
+    const { author } = dto
+    console.log({ dto })
 
     const newPost = await this.postModel.create(dto)
 
-    this.userService.addPost({ authorId, postId: newPost.id })
+    // this.userService.addPost({ authorId, postId: newPost.id })
 
     return newPost
   }
 
-  async deleteSingle(id: string, authorId: string) {
+  async deleteSingle(id: string) {
     const deletedPost = await this.postModel.findByIdAndDelete(id)
 
-    this.userService.removePost({ authorId, postId: deletedPost.id })
+    const author = deletedPost.author
+    // this.userService.removePost({ authorId, postId: deletedPost.id })
 
     return deletedPost
   }
 
   async updateSingle(id: string, dto: UpdatePostDto) {
-    const updatedPost = await this.postModel.findByIdAndUpdate(id, dto, {
+    const updateData = Object.keys(dto).map((key) => ({
+      $set: {
+        [key]: dto[key],
+      },
+    }))
+
+    const updatedPost = await this.postModel.findByIdAndUpdate(id, updateData, {
       new: true,
     })
     return updatedPost
