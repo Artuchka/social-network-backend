@@ -55,8 +55,8 @@ export class UserController {
 
   @Post('/friendRequest')
   @UseGuards(JwtGuard)
-  @ApiOperation({ summary: 'Sending friend request' })
-  async addFriend(
+  @ApiOperation({ summary: 'Sending friend request from requestor' })
+  async requestFriend(
     @Body('requestorId') requestorId: string,
     @Body('recieverId') recieverId: string,
     @User('id') currentUserId: string,
@@ -70,6 +70,27 @@ export class UserController {
     })
 
     return { message: 'friend request sent', newReciever, newRequestor }
+  }
+
+  @Post('/friendConfirm')
+  @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Confirming friend request from reciever' })
+  async confirmFriend(
+    @Body('requestorId') requestorId: string,
+    @Body('confirmerId') confirmerId: string,
+    @User('id') currentUserId: string,
+  ) {
+    if (currentUserId !== confirmerId) {
+      throw new ForbiddenException('You are not logged in as confirmer')
+    }
+    const { newRequestor, newConfirmer } = await this.userService.friendConfirm(
+      {
+        requestorId,
+        confirmerId,
+      },
+    )
+
+    return { message: 'friend request confirmed', newConfirmer, newRequestor }
   }
 
   @Delete('/drop/:name')

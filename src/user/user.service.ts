@@ -161,23 +161,88 @@ export class UserService {
       requestor.friends.includes(recieverId)
     if (requestorAlreadyFriendsWithReciever) {
       throw new BadRequestException(
-        `${requestorId} is already friends with ${recieverId}`,
+        `Requestor is already friends with reciever`,
       )
     }
 
-    const newRequestor = await this.userModel.findByIdAndUpdate(requestorId, {
-      $push: { following: recieverId },
-    })
-    const newReciever = await this.userModel.findByIdAndUpdate(recieverId, {
-      $push: { followers: requestorId },
-    })
+    console.log({ requestorAlreadyFollowingReciever })
+    console.log({ recieverAlreadyFollowingRequestor })
+    console.log({ requestorAlreadyFriendsWithReciever })
+
+    const newRequestor = await this.userModel.findByIdAndUpdate(
+      requestorId,
+      {
+        $push: { following: recieverId },
+      },
+      { new: true },
+    )
+    const newReciever = await this.userModel.findByIdAndUpdate(
+      recieverId,
+      {
+        $push: { followers: requestorId },
+      },
+      { new: true },
+    )
 
     return { newRequestor, newReciever }
   }
 
-  async friendConfirm({ requestorId, recieverId }) {
-    // const requestor = this.userModel.findById(requestorId)
-    // const reciever = this.userModel.findById(recieverId)
+  async friendConfirm({ requestorId, confirmerId }) {
+    const requestor = await this.userModel.findById(requestorId)
+    const confirmer = await this.userModel.findById(confirmerId)
+
+    if (!requestor || !confirmer) {
+      throw new BadRequestException(
+        `${requestorId} or ${confirmerId} is not a member of social network`,
+      )
+    }
+
+    const requestorIsFollowingConfirmer =
+      confirmer.followers.includes(requestorId) &&
+      requestor.following.includes(confirmerId)
+    if (!requestorIsFollowingConfirmer) {
+      throw new BadRequestException(`Requestor is NOT following confirmer`)
+    }
+
+    const confirmerIsFollowingRequestor =
+      confirmer.following.includes(requestorId) &&
+      requestor.followers.includes(confirmerId)
+    if (confirmerIsFollowingRequestor) {
+      throw new BadRequestException(
+        `Confirmer is already following requestor. Please, send /friendConfirm from requestor`,
+      )
+    }
+
+    const requestorAlreadyFriendsWithConfirmer =
+      confirmer.friends.includes(requestorId) &&
+      requestor.friends.includes(confirmerId)
+    if (requestorAlreadyFriendsWithConfirmer) {
+      throw new BadRequestException(
+        `Requestor is already friends with confirmer`,
+      )
+    }
+
+    console.log({ requestorIsFollowingConfirmer })
+    console.log({ confirmerIsFollowingRequestor })
+    console.log({ requestorAlreadyFriendsWithConfirmer })
+
+    const newRequestor = await this.userModel.findByIdAndUpdate(
+      requestorId,
+      {
+        $pull: { following: confirmerId },
+        $push: { friends: confirmerId },
+      },
+      { new: true },
+    )
+    const newConfirmer = await this.userModel.findByIdAndUpdate(
+      confirmerId,
+      {
+        $pull: { followers: requestorId },
+        $push: { friends: requestorId },
+      },
+      { new: true },
+    )
+    return { newRequestor, newConfirmer }
   }
 }
 
