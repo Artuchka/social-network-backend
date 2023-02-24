@@ -7,7 +7,7 @@ import { Photo } from '../photo/photo.schema'
 
 export type CommentDocument = HydratedDocument<Comment>
 
-@Schema({ toJSON: { virtuals: true } })
+@Schema({ timestamps: true, toJSON: { virtuals: true } })
 export class Comment extends Entry {
   @Prop({
     type: String,
@@ -26,12 +26,14 @@ export class Comment extends Entry {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Comment',
-    required: true,
   })
   reply: Comment
 
   @Prop({ type: Content })
   content: Content
+
+  likes: number
+  dislikes: number
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment)
