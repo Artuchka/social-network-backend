@@ -6,6 +6,8 @@ import { UserModule } from './user/user.module'
 import { RolesGuard } from './auth/guards/roles.guard'
 import { APP_GUARD } from '@nestjs/core'
 import { PostModule } from './post/post.module';
+import { CommentModule } from './comment/comment.module';
+import { PhotoModule } from './photo/photo.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { PostModule } from './post/post.module';
     AuthModule,
     UserModule,
     PostModule,
+    CommentModule,
+    PhotoModule,
   ],
   controllers: [],
   providers: [
