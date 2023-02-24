@@ -44,9 +44,10 @@ export class PostController {
   }
 
   @Post()
+  @UseGuards(JwtGuard)
   @ApiOperation({ summary: 'Create a post' })
-  async create(@Body() dto: NewPostDto) {
-    const post = await this.postService.create(dto)
+  async create(@Body() dto: NewPostDto, @User('id') userId: string) {
+    const post = await this.postService.create({ userId, dto })
 
     return {
       message: 'created post',
@@ -55,9 +56,10 @@ export class PostController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtGuard)
   @ApiOperation({ summary: 'Delete post' })
-  async deleteSingle(@Param('id') postId: string) {
-    const post = await this.postService.deleteSingle(postId)
+  async deleteSingle(@Param('id') postId: string, @User('id') userId: string) {
+    const post = await this.postService.deleteSingle({ postId, userId })
 
     return {
       message: 'deleted post',
@@ -66,9 +68,14 @@ export class PostController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtGuard)
   @ApiOperation({ summary: 'Update post' })
-  async updateSingle(@Param('id') id: string, @Body() dto: UpdatePostDto) {
-    const post = await this.postService.updateSingle(id, dto)
+  async updateSingle(
+    @Param('id') postId: string,
+    @Body() dto: UpdatePostDto,
+    @User('id') userId: string,
+  ) {
+    const post = await this.postService.updateSingle({ postId, userId, dto })
 
     return {
       message: 'updated',

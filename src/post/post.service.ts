@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { PostDocument } from './post.schema'
@@ -25,37 +25,54 @@ export class PostService {
     return post
   }
 
-  async create(dto: NewPostDto) {
-    const { author } = dto
-    console.log({ dto })
-
-    const newPost = await this.postModel.create(dto)
-
-    // this.userService.addPost({ authorId, postId: newPost.id })
+  async create({ userId, dto }: { userId: string; dto: NewPostDto }) {
+    const newPost = await this.postModel.create({ ...dto, author: userId })
 
     return newPost
   }
 
-  async deleteSingle(id: string) {
-    const deletedPost = await this.postModel.findByIdAndDelete(id)
+  async deleteSingle({ userId, postId }: { postId: string; userId: string }) {
+    const foundPost = await this.postModel.findById(postId)
 
-    const author = deletedPost.author
-    // this.userService.removePost({ authorId, postId: deletedPost.id })
+    if (!foundPost) {
+      throw new NotFoundException(`No Post with id ${postId}`)
+    }
 
-    return deletedPost
+    if (foundPost.author.toString() !== userId) {
+      throw new NotFoundException(`You are not the owner of this Post`)
+    }
+
+    await foundPost.delete()
+
+    return foundPost
   }
 
-  async updateSingle(id: string, dto: UpdatePostDto) {
-    const updateData = Object.keys(dto).map((key) => ({
-      $set: {
-        [key]: dto[key],
-      },
-    }))
+  async updateSingle({
+    userId,
+    postId,
+    dto,
+  }: {
+    userId: string
+    postId: string
+    dto: UpdatePostDto
+  }) {
+    const foundPost = await this.postModel.findById(postId)
 
-    const updatedPost = await this.postModel.findByIdAndUpdate(id, updateData, {
-      new: true,
+    if (!foundPost) {
+      throw new NotFoundException(`No Post with id ${postId} `)
+    }
+
+    if (foundPost.author.toString() !== userId) {
+      throw new NotFoundException(`You are not the owner of this Post`)
+    }
+
+    Object.keys(dto).map((key) => {
+      foundPost[key] = dto[key]
     })
-    return updatedPost
+
+    await foundPost.save()
+
+    return foundPost
   }
 
   async like(id: string, userId: string) {

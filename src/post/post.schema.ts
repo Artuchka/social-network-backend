@@ -6,10 +6,13 @@ import { Content } from '../schemas/content.schema'
 
 export type PostDocument = HydratedDocument<Post>
 
-@Schema({ toJSON: { virtuals: true } })
+@Schema({ timestamps: true, toJSON: { virtuals: true } })
 export class Post extends Entry {
   @Prop({ type: Content, required: true })
   content: Content
+
+  likes: number
+  dislikes: number
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post)
