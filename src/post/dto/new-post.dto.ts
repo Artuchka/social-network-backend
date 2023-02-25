@@ -16,14 +16,6 @@ import { Type } from 'class-transformer'
 import { NewContentDto } from '../../dto/new-content.dto'
 
 export class NewPostDto {
-  // @ApiProperty({
-  //   example: '63f76752d07b5909501ead39',
-  //   description: 'post author id',
-  // })
-  // @IsString()
-  // @IsDefined()
-  // author: string
-
   @ApiProperty({
     description: 'contents of comment',
   })

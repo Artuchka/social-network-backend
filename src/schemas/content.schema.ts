@@ -17,7 +17,7 @@ export class Content {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Photo' }],
     default: [],
   })
-  images: Photo
+  images: Photo[] | string[]
 }
 
 export const ContentSchema = SchemaFactory.createForClass(Content)

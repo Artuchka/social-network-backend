@@ -5,12 +5,14 @@ import { PostDocument } from './post.schema'
 import { NewPostDto } from './dto/new-post.dto'
 import { UpdatePostDto } from './dto/update-post.dto'
 import { UserEntriesService } from '../user/services/user-entries.service'
+import { PhotoService } from '../photo/photo.service'
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectModel('Post') private readonly postModel: Model<PostDocument>,
     private readonly userEntriesService: UserEntriesService,
+    private readonly photoService: PhotoService,
   ) {}
 
   async getAll() {
@@ -26,6 +28,10 @@ export class PostService {
   }
 
   async create({ userId, dto }: { userId: string; dto: NewPostDto }) {
+    if ('images' in dto?.content) {
+      await this.photoService._checkPhotos(dto.content.images)
+    }
+
     const newPost = await this.postModel.create({ ...dto, author: userId })
     this.userEntriesService._addPost({ postId: newPost.id, authorId: userId })
 
@@ -71,8 +77,12 @@ export class PostService {
       throw new NotFoundException(`You are not the owner of this Post`)
     }
 
-    Object.keys(dto).map((key) => {
-      foundPost[key] = dto[key]
+    if ('images' in dto?.content) {
+      await this.photoService._checkPhotos(dto.content.images)
+    }
+
+    Object.keys(dto.content).map((key) => {
+      foundPost.content[key] = dto.content[key]
     })
 
     await foundPost.save()

@@ -12,5 +12,6 @@ import { UserModule } from '../user/user.module'
     MongooseModule.forFeature([{ name: Photo.name, schema: PhotoSchema }]),
     UserModule,
   ],
+  exports: [PhotoService],
 })
 export class PhotoModule {}

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { PhotoDocument } from './photo.schema'
 import mongoose, { Model, ObjectId, SchemaTypes } from 'mongoose'
@@ -23,6 +27,9 @@ export class PhotoService {
   async getSingle(id: string) {
     const photo = await this.photoModel.findById(id)
 
+    if (!photo) {
+      throw new NotFoundException(`No Photo with id ${id} `)
+    }
     return photo
   }
 
@@ -112,5 +119,22 @@ export class PhotoService {
       authorId: userId,
     })
     return updatedPhoto
+  }
+
+  async _checkPhotos(photos: string[]) {
+    const photoPromises = photos.map(async (photoId) => {
+      return await this.getSingle(photoId)
+    })
+    const ans = await Promise.all(photoPromises)
+      .then((data) => {
+        return data
+      })
+      .catch((err) => {
+        return err
+      })
+
+    if (ans instanceof Error) {
+      throw new BadRequestException(ans.message)
+    }
   }
 }
