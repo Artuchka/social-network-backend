@@ -5,6 +5,7 @@ import { UserService } from '../user/services/user.service'
 import { MongooseModule } from '@nestjs/mongoose'
 import { Comment, CommentSchema } from './comment.schema'
 import { UserModule } from '../user/user.module'
+import { PhotoModule } from '../photo/photo.module'
 
 @Module({
   providers: [CommentService],
@@ -12,6 +13,7 @@ import { UserModule } from '../user/user.module'
   imports: [
     MongooseModule.forFeature([{ name: Comment.name, schema: CommentSchema }]),
     UserModule,
+    PhotoModule,
   ],
 })
 export class CommentModule {}

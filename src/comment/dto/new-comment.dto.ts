@@ -19,14 +19,6 @@ import { NewContentDto } from '../../dto/new-content.dto'
 import { SourceType } from '../source-type.enum'
 
 export class NewCommentDto {
-  // @ApiProperty({
-  //   example: '63f76752d07b5909501ead39',
-  //   description: 'comment author id',
-  // })
-  // @IsString()
-  // @IsDefined()
-  // author: string
-
   @ApiProperty({
     example: '63f76752d0312909501ead39',
     description: 'id of closest parent comment',

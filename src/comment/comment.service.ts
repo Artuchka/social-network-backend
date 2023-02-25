@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose'
 import { NewCommentDto } from './dto/new-comment.dto'
 import { UpdateCommentDto } from './dto/update-comment.dto'
 import { UserEntriesService } from '../user/services/user-entries.service'
+import { PhotoService } from '../photo/photo.service'
 
 @Injectable()
 export class CommentService {
@@ -12,6 +13,7 @@ export class CommentService {
     @InjectModel('Comment')
     private readonly commentModel: Model<CommentDocument>,
     private readonly userEntriesService: UserEntriesService,
+    private readonly photoService: PhotoService,
   ) {}
 
   async getAll() {
@@ -30,6 +32,10 @@ export class CommentService {
   }
 
   async create({ dto, userId }: { dto: NewCommentDto; userId: string }) {
+    if ('images' in dto?.content) {
+      await this.photoService._checkPhotos(dto.content.images)
+    }
+
     const comment = await this.commentModel.create({ ...dto, author: userId })
 
     this.userEntriesService._addComment({
@@ -85,8 +91,12 @@ export class CommentService {
       throw new NotFoundException(`You are not the owner of this Comment`)
     }
 
-    Object.keys(dto).map((key) => {
-      foundComment[key] = dto[key]
+    if ('images' in dto?.content) {
+      await this.photoService._checkPhotos(dto.content.images)
+    }
+
+    Object.keys(dto.content).map((key) => {
+      foundComment.content[key] = dto.content[key]
     })
 
     await foundComment.save()
