@@ -43,8 +43,9 @@ export class CommentService {
       await this.postService.getSingle(source)
     }
 
+    let parentComment = null
     if (reply) {
-      await this.getSingle(reply)
+      parentComment = await this.getSingle(reply)
     }
 
     if ('images' in dto?.content) {
@@ -52,7 +53,10 @@ export class CommentService {
     }
 
     const comment = await this.commentModel.create({ ...dto, author: userId })
-
+    if (reply) {
+      parentComment.comments.push(comment.id)
+      await parentComment.save()
+    }
     this.userEntriesService._addComment({
       authorId: userId,
       commentId: comment.id,
