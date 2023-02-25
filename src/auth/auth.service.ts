@@ -10,6 +10,7 @@ import { UserService } from '../user/services/user.service'
 import { NewUserDto } from '../user/dto/new-user.dto'
 import { UserDetails } from '../user/user-details.interface'
 import { ExistingUserDto } from '../user/dto/existing-user.dto'
+import { UserDocument } from '../user/schemas/user.schema'
 
 @Injectable()
 export class AuthService {
@@ -44,7 +45,10 @@ export class AuthService {
     return bcrypt.compare(password, hashedPassword)
   }
 
-  async validateUser(email: string, password: string): Promise<UserDetails> {
+  async validateUser(
+    email: string,
+    password: string,
+  ): Promise<{ userDetails; user }> {
     const user = await this.userService.getSingleByEmail(email)
     if (!user) {
       throw new NotFoundException('no such user with email: ' + email)
@@ -55,17 +59,22 @@ export class AuthService {
       throw new BadRequestException('bad password')
     }
 
+    delete user.password
     const userDetails = this.userService._getUserDetails(user)
-    return userDetails
+    return { userDetails, user }
   }
 
-  async login(tryingUser: ExistingUserDto): Promise<{ token: string } | null> {
+  async login(
+    tryingUser: ExistingUserDto,
+  ): Promise<{ user: UserDocument; token: string }> {
     const { email, password } = tryingUser
-    const user = await this.validateUser(email, password)
+    const { user, userDetails } = await this.validateUser(email, password)
 
-    const token = await this.jwtService.signAsync({ user })
+    const token = await this.jwtService.signAsync({
+      user: userDetails,
+    })
 
-    return { token }
+    return { user, token }
   }
 
   async logout(res: Response): Promise<{ token: string } | null> {

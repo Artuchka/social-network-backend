@@ -12,6 +12,7 @@ import { Response } from 'express'
 import { NewUserDto } from './../user/dto/new-user.dto'
 import { ExistingUserDto } from './../user/dto/existing-user.dto'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { UserDocument } from '../user/schemas/user.schema'
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -31,11 +32,12 @@ export class AuthController {
   })
   async login(
     @Res({ passthrough: true }) res: Response,
-    @Body() user: ExistingUserDto,
-  ): Promise<{ token: string }> {
-    const token = (await this.authService.login(user)).token
+    @Body() tryingUser: ExistingUserDto,
+  ) {
+    const { token, user } = await this.authService.login(tryingUser)
 
-    return this.authService.setCookie(res, token)
+    this.authService.setCookie(res, token)
+    return { message: 'Welcome back!', user }
   }
 
   @Get('logout')
