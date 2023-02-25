@@ -14,5 +14,6 @@ import { PhotoModule } from '../photo/photo.module'
     UserModule,
     PhotoModule,
   ],
+  exports: [PostService],
 })
 export class PostModule {}

@@ -24,6 +24,9 @@ export class PostService {
   async getSingle(id: string) {
     const post = await this.postModel.findById(id)
 
+    if (!post) {
+      throw new NotFoundException(`Post ${id} not found`)
+    }
     return post
   }
 

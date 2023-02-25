@@ -6,6 +6,8 @@ import { NewCommentDto } from './dto/new-comment.dto'
 import { UpdateCommentDto } from './dto/update-comment.dto'
 import { UserEntriesService } from '../user/services/user-entries.service'
 import { PhotoService } from '../photo/photo.service'
+import { SourceType } from './source-type.enum'
+import { PostService } from '../post/post.service'
 
 @Injectable()
 export class CommentService {
@@ -14,6 +16,7 @@ export class CommentService {
     private readonly commentModel: Model<CommentDocument>,
     private readonly userEntriesService: UserEntriesService,
     private readonly photoService: PhotoService,
+    private readonly postService: PostService,
   ) {}
 
   async getAll() {
@@ -32,6 +35,18 @@ export class CommentService {
   }
 
   async create({ dto, userId }: { dto: NewCommentDto; userId: string }) {
+    const { source, sourceType, reply } = dto
+
+    if (sourceType === SourceType.PHOTO) {
+      await this.photoService._checkPhotos([source])
+    } else if (sourceType === SourceType.POST) {
+      await this.postService.getSingle(source)
+    }
+
+    if (reply) {
+      await this.getSingle(reply)
+    }
+
     if ('images' in dto?.content) {
       await this.photoService._checkPhotos(dto.content.images)
     }

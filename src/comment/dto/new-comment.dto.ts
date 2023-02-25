@@ -42,7 +42,7 @@ export class NewCommentDto {
   })
   @IsEnum(SourceType, { each: true })
   @IsDefined()
-  sourceType: string
+  sourceType: SourceType
 
   @ApiProperty({
     description: 'contents of comment',
