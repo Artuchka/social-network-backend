@@ -23,7 +23,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule)
 
   app.setGlobalPrefix('api')
-  app.enableCors()
+  app.enableCors({
+    origin: true,
+    credentials: true,
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  })
   app.use(cookieParser(process.env.SECRET))
   app.useGlobalPipes(
     new ValidationPipe({

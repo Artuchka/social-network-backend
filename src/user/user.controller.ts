@@ -60,6 +60,7 @@ export class UserController {
   @Post('/friendRequest')
   @UseGuards(JwtGuard)
   @ApiOperation({ summary: 'Sending friend request from requestor' })
+  // TODO: swagger requestBody
   async requestFriend(
     @Body('requestorId') requestorId: string,
     @Body('recieverId') recieverId: string,
