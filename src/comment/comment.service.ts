@@ -51,6 +51,11 @@ export class CommentService {
     let parentComment = null
     if (reply) {
       parentComment = await this.getSingle(reply)
+      if (parentComment.source.toString() !== source) {
+        throw new BadRequestException(
+          `comment from source = ${source} cannot be replied to comment with (!different) source ${parentComment.source} `,
+        )
+      }
     }
 
     if ('images' in dto?.content) {
