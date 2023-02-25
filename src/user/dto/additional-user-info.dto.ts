@@ -14,6 +14,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
 import { LocationDto } from './location.dto'
 import { Role } from '../enums/role.enum'
+import { UpdateUserInfoDto } from './update-user-info.dto'
 
 export class AdditionalUserInfo {
   @ApiPropertyOptional({
@@ -35,25 +36,6 @@ export class AdditionalUserInfo {
   username: string
 
   @ApiPropertyOptional({
-    example: 'user',
-    enum: Role,
-    type: Role,
-    enumName: 'Role',
-  })
-  @IsArray()
-  @IsString({ each: true })
-  @ArrayMinSize(1)
-  @IsEnum(Role, { each: true })
-  @IsOptional()
-  roles: [Role]
-
-  @ApiPropertyOptional({
-    example: 'John',
-  })
-  @IsString()
-  phone: string
-
-  @ApiPropertyOptional({
     example: 'male',
     enum: Gender,
     type: Gender,
@@ -65,23 +47,25 @@ export class AdditionalUserInfo {
   gender: Gender
 
   @ApiPropertyOptional({
-    example: '01.01.1999',
-  })
-  @IsDateString()
-  birthday: Date
-
-  @ApiPropertyOptional({
     example: 'img-src.com/1',
   })
   @IsString()
   avatar: string
 
-  @ApiPropertyOptional({
-    // example: 'St. Petersburg',
-  })
-  @IsObject()
-  @IsNotEmptyObject()
-  @ValidateNested({ each: true })
-  @Type(() => LocationDto)
-  location: LocationDto
+  @IsOptional()
+  @Type(() => UpdateUserInfoDto)
+  info: UpdateUserInfoDto
 }
+
+// @ApiPropertyOptional({
+//   example: 'user',
+//   enum: Role,
+//   type: Role,
+//   enumName: 'Role',
+// })
+// @IsArray()
+// @IsString({ each: true })
+// @ArrayMinSize(1)
+// @IsEnum(Role, { each: true })
+// @IsOptional()
+// roles: [Role]

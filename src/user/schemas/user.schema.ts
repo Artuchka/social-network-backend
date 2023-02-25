@@ -6,10 +6,11 @@ import { Post } from 'src/post/post.schema'
 import { Location, LocationSchema } from './location.schema'
 import { Photo } from '../../photo/photo.schema'
 import { UserEntries } from '../../schemas/user-entries.schema'
+import { UserInfo } from './user-info.schema'
 
-// export interface IUserDocuemnt extends User, Document {}
-// export type UserDocument = HydratedDocument<User>
-export type UserDocument = User & Document
+// export interface UserDocuemnt extends User, Document {}
+export type UserDocument = HydratedDocument<User>
+// export type UserDocument = User & Document
 
 @Schema({ timestamps: true, toJSON: { virtuals: true } })
 export class User {
@@ -53,41 +54,23 @@ export class User {
 
   @Prop({
     type: String,
-    default: '',
-  })
-  phone: string
-
-  @Prop({
-    type: String,
     enum: Gender,
     default: Gender.Male,
   })
   gender: Gender
 
   @Prop({
-    type: Date,
-    default: '',
-  })
-  birthday: Date
-
-  @Prop({
-    type: LocationSchema,
-    default: {
-      city: '',
-      country: '',
-      coordinates: {
-        x: '',
-        y: '',
-      },
-    },
-  })
-  location: Location
-
-  @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Photo',
+    default: null,
   })
-  avatar: Photo
+  avatar: Photo | string
+
+  @Prop({
+    type: UserInfo,
+    default: {},
+  })
+  info: UserInfo
 
   @Prop({
     type: [

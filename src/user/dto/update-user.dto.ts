@@ -4,7 +4,6 @@ import { AdditionalUserInfo } from './additional-user-info.dto'
 
 export class UpdateUserDto extends PartialType(
   IntersectionType(
-    OmitType(NewUserDto, ['password']),
-    OmitType(AdditionalUserInfo, ['roles']),
+    /*OmitType(NewUserDto, ['password']), for email update*/ AdditionalUserInfo,
   ),
 ) {}

@@ -12,6 +12,7 @@ import { User, UserDocument } from '../schemas/user.schema'
 import { UserDetails } from '../user-details.interface'
 import { NewUserDto } from '../dto/new-user.dto'
 import { UpdateUserDto } from '../dto/update-user.dto'
+import * as merge from 'lodash.merge'
 
 @Injectable()
 export class UserService {
@@ -36,18 +37,20 @@ export class UserService {
   }
 
   async getSingleById(id: string): Promise<UserDocument> {
-    const user = await this.userModel.findById(id)
+    const user = await this.userModel.findById(id).select('-password')
 
     return user
   }
 
   async getSingleByEmail(email: string): Promise<UserDocument> {
     const user = await this.userModel.findOne({ email })
+
     return user
   }
 
   async getAll(): Promise<UserDocument[]> {
-    const users = await this.userModel.find()
+    const users = await this.userModel.find().select('-password')
+
     return users
   }
 
@@ -57,39 +60,15 @@ export class UserService {
   }
 
   async updateSingle(id: string, dto: UpdateUserDto): Promise<UserDocument> {
+    console.log({ dto })
+
     const foundUser = await this.userModel.findById(id)
 
     if (!foundUser) {
       throw new NotFoundException(`No user with id ${id}`)
     }
 
-    const allowed = [
-      'username',
-      'firstname',
-      'lastname',
-      'phone',
-      'gender',
-      'birthday',
-      'location',
-      'email',
-      'avatar',
-    ]
-
-    Object.keys(dto).forEach((key) => {
-      if (!allowed.includes(key)) {
-        throw new ForbiddenException(
-          `😡Запрещенно обновлять поле \`${key}\` у пользователя😡`,
-        )
-      }
-
-      if (key === 'location') {
-        Object.keys(dto[key]).forEach((subkey) => {
-          foundUser[key][subkey] = dto[key][subkey]
-        })
-      } else {
-        foundUser[key] = dto[key]
-      }
-    })
+    merge(foundUser, dto)
     await foundUser.save()
 
     return foundUser

@@ -3,7 +3,7 @@ import { HydratedDocument } from 'mongoose'
 
 export type CoordinatesDocument = HydratedDocument<Coordinates>
 
-@Schema()
+@Schema({ _id: false })
 export class Coordinates {
   @Prop({
     type: String,

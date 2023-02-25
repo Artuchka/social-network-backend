@@ -4,7 +4,7 @@ import { HydratedDocument } from 'mongoose'
 
 export type LocationDocument = HydratedDocument<Location>
 
-@Schema()
+@Schema({ _id: false })
 export class Location {
   @Prop({
     type: String,
