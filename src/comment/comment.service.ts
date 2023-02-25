@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common'
 import { Model } from 'mongoose'
 import { CommentDocument } from './comment.schema'
 import { InjectModel } from '@nestjs/mongoose'
@@ -25,7 +29,7 @@ export class CommentService {
     return comment
   }
 
-  async getSingle(id: string) {
+  async getSingle(id: string): Promise<CommentDocument> {
     const comment = await this.commentModel.findById(id)
 
     if (!comment) {
@@ -37,10 +41,11 @@ export class CommentService {
   async create({ dto, userId }: { dto: NewCommentDto; userId: string }) {
     const { source, sourceType, reply } = dto
 
+    let sourceDocument = null
     if (sourceType === SourceType.PHOTO) {
-      await this.photoService._checkPhotos([source])
+      sourceDocument = await this.photoService.getSingle(source)
     } else if (sourceType === SourceType.POST) {
-      await this.postService.getSingle(source)
+      sourceDocument = await this.postService.getSingle(source)
     }
 
     let parentComment = null
@@ -57,6 +62,10 @@ export class CommentService {
       parentComment.comments.push(comment.id)
       await parentComment.save()
     }
+
+    sourceDocument.comments.push(comment.id)
+    await sourceDocument.save()
+
     this.userEntriesService._addComment({
       authorId: userId,
       commentId: comment.id,
