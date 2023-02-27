@@ -40,6 +40,9 @@ $ npm run start:prod
 
 ## 🚶Approach:
 
+I've approuched creating REST API using [Microsoft Guidelines](https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md)
+conventions 
+
 `bcryptjs` is used for hashing passwords with salt before storing them in Database
 
 `jsonwebtoken` is used for creating\decoding crypted Tokens, safely containing info about current user. JWT are stored in cookies.
