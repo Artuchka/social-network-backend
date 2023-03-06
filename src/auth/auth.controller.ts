@@ -21,8 +21,10 @@ export class AuthController {
 
   @Post('register')
   @ApiOperation({ summary: 'Register a user' })
-  register(@Body() dto: NewUserDto) {
-    return this.authService.register(dto)
+  async register(@Body() dto: NewUserDto) {
+    const user = await this.authService.register(dto)
+
+    return { message: 'registered!' }
   }
 
   @Post('login')

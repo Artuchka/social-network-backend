@@ -5,7 +5,7 @@ import { PostDocument } from './post.schema'
 import { NewPostDto } from './dto/new-post.dto'
 import { UpdatePostDto } from './dto/update-post.dto'
 import { UserEntriesService } from '../user/services/user-entries.service'
-import { PhotoService } from '../photo/photo.service'
+import { PhotoService } from '../photo/services/photo.service'
 
 @Injectable()
 export class PostService {

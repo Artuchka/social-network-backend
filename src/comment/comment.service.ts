@@ -9,7 +9,7 @@ import { InjectModel } from '@nestjs/mongoose'
 import { NewCommentDto } from './dto/new-comment.dto'
 import { UpdateCommentDto } from './dto/update-comment.dto'
 import { UserEntriesService } from '../user/services/user-entries.service'
-import { PhotoService } from '../photo/photo.service'
+import { PhotoService } from '../photo/services/photo.service'
 import { SourceType } from './source-type.enum'
 import { PostService } from '../post/post.service'
 

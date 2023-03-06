@@ -7,14 +7,18 @@ import {
   Param,
   Patch,
   Post,
+  UploadedFile,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common'
 import { JwtGuard } from '../auth/guards/jwt.guard'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { User } from '../user/decorators/user.decorator'
-import { PhotoService } from './photo.service'
+import { PhotoService } from './services/photo.service'
 import { NewPhotoDto } from './dto/new-photo.dto'
 import { UpdatePhotoDto } from './dto/update-photo.dto'
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express'
 
 @ApiTags('Photo')
 @Controller('photo')
@@ -40,6 +44,26 @@ export class PhotoController {
     return {
       message: 'single photo',
       photo,
+    }
+  }
+
+  @Post('upload')
+  @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Upload a photo' })
+  @UseInterceptors(FilesInterceptor('file'))
+  async uploadPhoto(
+    @UploadedFiles() files: Express.Multer.File[],
+    @User('id') author: string,
+  ) {
+    console.log({ files })
+    const { paths, savedPercentage } = await this.photoService.uploadImages({
+      author,
+      files,
+    })
+
+    return {
+      message: `${files.length} фото загружено, сжали на ${savedPercentage}% 🤞`,
+      paths,
     }
   }
 

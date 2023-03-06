@@ -4,11 +4,12 @@ import {
   NotFoundException,
 } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { PhotoDocument } from './photo.schema'
+import { PhotoDocument } from '../photo.schema'
 import mongoose, { Model, ObjectId, SchemaTypes } from 'mongoose'
-import { NewPhotoDto } from './dto/new-photo.dto'
-import { UpdatePhotoDto } from './dto/update-photo.dto'
-import { UserEntriesService } from '../user/services/user-entries.service'
+import { NewPhotoDto } from '../dto/new-photo.dto'
+import { UpdatePhotoDto } from '../dto/update-photo.dto'
+import { UserEntriesService } from '../../user/services/user-entries.service'
+import { UploadService } from './upload.service'
 
 @Injectable()
 export class PhotoService {
@@ -16,6 +17,7 @@ export class PhotoService {
     @InjectModel('Photo')
     private readonly photoModel: Model<PhotoDocument>,
     private readonly userEntriesService: UserEntriesService,
+    private readonly uploadService: UploadService,
   ) {}
 
   async getAll() {
@@ -135,6 +137,22 @@ export class PhotoService {
 
     if (ans instanceof Error) {
       throw new BadRequestException(ans.message)
+    }
+  }
+  async uploadImages({
+    author,
+    files,
+  }: {
+    author: string
+    files: Express.Multer.File[]
+  }) {
+    const { paths, savedPercentage } = await this.uploadService.uploadImages(
+      files,
+    )
+
+    return {
+      paths,
+      savedPercentage,
     }
   }
 }
