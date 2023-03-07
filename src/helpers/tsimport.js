@@ -1,10 +1,7 @@
 const Module = require('module')
 const { isAbsolute } = require('path')
 
-exports.dynamicImport = importEsm
-exports.importEsm = importEsm
-
-async function importEsm(specifier, module) {
+export async function importEsm(specifier, module) {
   if (isAbsolute) {
     return import(specifier)
   }
@@ -23,3 +20,8 @@ async function importEsm(specifier, module) {
   }
   return import(resolvedPath)
 }
+
+// module.exports = {
+//   dynamicImport: importEsm,
+//   importEsm: importEsm,
+// }

@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common'
+// import { dynamicImport, importEsm } from '../../helpers/tsimport'
 
-import { dynamicImport } from 'tsimportlib'
+// import { dynamicImport } from 'tsimportlib'
 
 // import immin from
 
-let imagemin = null
+// let imagemin = null
 // let webpmin = null
 // let pngquant = null
 // let jpegtran = null
@@ -12,7 +13,10 @@ let imagemin = null
 // let svgo = null
 // let jpegrecompress = null
 async function main() {
-  imagemin = (await dynamicImport('imagemin', module)).default
+  // imagemin = (
+  //   await dynamicImport('./../../../node_modules/imagemin/index.js', module)
+  // ).default
+  ;('/home/temka/user_files/proga/training/nestjs_training/node_modules/imagemin/index.js')
   // jpegtran = (await dynamicImport('imagemin-jpegtran', module)).default
   // webpmin = (await dynamicImport('imagemin-webp', module)).default
   // pngquant = (await dynamicImport('imagemin-pngquant', module)).default
@@ -20,7 +24,7 @@ async function main() {
   // svgo = (await dynamicImport('imagemin-svgo', module)).default
   // jpegrecompress = (await dynamicImport('imagemin-jpeg-recompress', module))
   //   .default
-  // console.log({ jpegtran })
+  // console.log({ imagemin })
 }
 main()
 
@@ -63,7 +67,8 @@ export class MinifyImageService {
     //   imageminOption.plugins.push(jpegrecompress({ quality: 'medium' }))
     // }
 
-    const minifiedBuffer = await imagemin.buffer(buffer, imageminOption)
+    // const minifiedBuffer = await imagemin.buffer(buffer, imageminOption)
+    const minifiedBuffer = buffer
 
     const saved = (
       ((buffer.length - minifiedBuffer.length) / buffer.length) *
