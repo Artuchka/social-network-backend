@@ -20,16 +20,16 @@ const opts = {
 }
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule)
+  const app = await NestFactory.create(AppModule, { cors: true })
 
-  app.enableCors({
-    // origin: ['http://localhost', /localhost/],
-    // origin: true,
-    // credentials: true,
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
-    // allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
-  })
+  // app.enableCors({
+  //   // origin: ['http://localhost', /localhost/],
+  //   // origin: true,
+  //   // credentials: true,
+  //   origin: 'http://localhost:3000',
+  //   methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+  //   // allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
+  // })
 
   app.setGlobalPrefix('api')
   app.use(cookieParser(process.env.SECRET))
