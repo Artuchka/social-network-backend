@@ -27,11 +27,11 @@ async function bootstrap() {
     // origin: ['http://localhost', /localhost/],
     // credentials: true,
     // methods: ['GET', 'POST', 'PATCH', 'DELETE'],
-    // credentials: true,
-    // origin: ["http://localhost:5173"],
-    origin: true,
+    credentials: false,
+    origin: ['http://localhost:3000'],
+    // origin: true,
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    // allowedHeaders: ['Content-Type', 'Authorization'],
   })
   app.use(cookieParser(process.env.SECRET))
   app.useGlobalPipes(
