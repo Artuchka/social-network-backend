@@ -36,6 +36,9 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
     @Body() tryingUser: ExistingUserDto,
   ) {
+    console.log({ res })
+    console.log({ tryingUser })
+
     const { token, user } = await this.authService.login(tryingUser)
 
     this.authService.setCookie(res, token)
