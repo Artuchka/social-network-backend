@@ -22,15 +22,24 @@ const opts = {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
-  const options = {
-    origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
+  // const options = {
+  //   origin: '*',
+  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+  //   preflightContinue: false,
+  //   optionsSuccessStatus: 204,
+  //   credentials: true,
+  // } as CorsOptions
+  // app.enableCors(options)
+  app.enableCors({
+    origin: function (origin, callback) {
+      console.log('allowed cors for:', origin)
+      callback(null, true)
+    },
+    allowedHeaders:
+      'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe',
+    methods: 'GET,PUT,POST,DELETE,UPDATE,OPTIONS',
     credentials: true,
-  } as CorsOptions
-
-  app.enableCors(options)
+  })
 
   // app.enableCors({
   //   // origin: ['http://localhost', /localhost/],
