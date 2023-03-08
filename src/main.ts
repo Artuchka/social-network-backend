@@ -3,6 +3,7 @@ import { AppModule } from './app.module'
 import * as cookieParser from 'cookie-parser'
 import { ValidationPipe } from '@nestjs/common'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface'
 
 const opts = {
   customSiteTitle: 'Zavod REST API DOCS',
@@ -20,13 +21,16 @@ const opts = {
 }
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    cors: {
-      origin: '*',
-      credentials: true,
-      methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
-    },
-  })
+  const app = await NestFactory.create(AppModule)
+  const options = {
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+    credentials: true,
+  } as CorsOptions
+
+  app.enableCors(options)
 
   // app.enableCors({
   //   // origin: ['http://localhost', /localhost/],
@@ -62,3 +66,21 @@ async function bootstrap() {
   await app.listen(2000)
 }
 bootstrap()
+// {
+//   cors: {
+//     origin: [
+//       'http://localhost:3000',
+//       'http://localhost',
+//       /http:\/\/localhost*/,
+//     ],
+//     credentials: true,
+//     allowedHeaders: [
+//       'Access-Control-Allow-Origin',
+//       'Content-Type',
+//       'Authorization',
+//       'Origin',
+//       'Accept',
+//     ],
+//     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+//   },
+// }
