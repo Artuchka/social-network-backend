@@ -28,6 +28,9 @@ let UserController = class UserController {
         this.userService = userService;
         this.friendService = friendService;
     }
+    async testroute() {
+        return { message: 'tests good' };
+    }
     async getAll() {
         const users = await this.userService.getAll();
         return { message: 'all user', users };
@@ -124,6 +127,13 @@ let UserController = class UserController {
         return { message: 'updated', user: updatedUser };
     }
 };
+__decorate([
+    (0, common_1.Get)('test'),
+    (0, swagger_1.ApiOperation)({ summary: 'test router' }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "testroute", null);
 __decorate([
     (0, common_1.Get)(),
     (0, common_1.UseGuards)(jwt_guard_1.JwtGuard, roles_guard_1.RolesGuard),

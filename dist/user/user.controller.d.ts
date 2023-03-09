@@ -31,6 +31,9 @@ export declare class UserController {
     private userService;
     private friendService;
     constructor(userService: UserService, friendService: FriendService);
+    testroute(): Promise<{
+        message: string;
+    }>;
     getAll(): Promise<{
         message: string;
         users: (import("mongoose").Document<unknown, any, import("./schemas/user.schema").User> & import("./schemas/user.schema").User & {
