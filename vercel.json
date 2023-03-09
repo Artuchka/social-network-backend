@@ -1,10 +1,8 @@
 {
     "version": 2,
-    "buildCommand": "npm start",
-    "installCommand": "npm install",
     "builds": [
         {
-            "src": "src/main.js",
+            "src": "src/main.ts",
             "use": "@vercel/node"
         }
     ],
@@ -15,9 +13,11 @@
             "methods": [
                 "GET",
                 "POST",
+                "PUT",
                 "PATCH",
-                "DELETE"
+                "DELETE",
+                "OPTIONS"
             ]
         }
-    ],
+    ]
 }
