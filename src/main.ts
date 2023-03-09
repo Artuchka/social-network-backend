@@ -28,7 +28,7 @@ async function bootstrap() {
       'http://localhost:3000',
       'https://testing-social-restapi.vercel.app/',
     ],
-    preflightContinue: true,
+    preflightContinue: false,
     optionsSuccessStatus: 204,
     methods: 'GET,POST,OPTIONS,DELETE,PUT,PATCH',
     // origin: [
