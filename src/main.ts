@@ -29,7 +29,7 @@ async function bootstrap() {
       'https://testing-social-restapi.vercel.app/',
     ],
     preflightContinue: true,
-    optionsSuccessStatus: 200,
+    optionsSuccessStatus: 204,
     methods: ['GET,POST,OPTIONS,DELETE,PUT,PATCH'],
   })
 

@@ -20,6 +20,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('register')
+  @HttpCode(201)
   @ApiOperation({ summary: 'Register a user' })
   async register(@Body() dto: NewUserDto) {
     const user = await this.authService.register(dto)
