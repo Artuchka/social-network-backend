@@ -21,41 +21,13 @@ const opts = {
 }
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    cors: {
-      origin: function (origin, callback) {
-        console.log('allowed cors for:', origin)
-        callback(null, true)
-      },
-    },
-  })
-  // const options = {
-  //   origin: '*',
-  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-  //   preflightContinue: false,
-  //   optionsSuccessStatus: 204,
-  //   credentials: true,
-  // } as CorsOptions
-  // app.enableCors(options)
-  // app.enableCors({
-  //   origin: function (origin, callback) {
-  //     console.log('allowed cors for:', origin)
-  //     callback(null, true)
-  //   },
-  //   allowedHeaders:
-  //     'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe',
-  //   methods: 'GET,PUT,POST,DELETE,UPDATE,OPTIONS',
-  //   credentials: true,
-  // })
+  const app = await NestFactory.create(AppModule)
 
-  // app.enableCors({
-  //   // origin: ['http://localhost', /localhost/],
-  //   // origin: true,
-  //   // credentials: true,
-  //   origin: 'http://localhost:3000',
-  //   methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
-  //   // allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
-  // })
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    preflightContinue: true,
+    methods: ['GET,POST,OPTIONS,DELETE,PUT'],
+  })
 
   app.setGlobalPrefix('api')
   app.use(cookieParser(process.env.SECRET))
