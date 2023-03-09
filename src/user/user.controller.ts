@@ -35,6 +35,11 @@ export class UserController {
     private friendService: FriendService,
   ) {}
 
+  @Get('test')
+  @ApiOperation({ summary: 'test router' })
+  async testroute() {
+    return { message: 'tests good' }
+  }
   @Get()
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.USER)
