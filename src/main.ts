@@ -25,22 +25,12 @@ async function bootstrap() {
 
   app.enableCors({
     origin: [
-      'http://localhost:3000',
+      /http:\/\/localhost:*/,
       'https://testing-social-restapi.vercel.app/',
     ],
     preflightContinue: false,
     optionsSuccessStatus: 204,
     methods: 'GET,POST,OPTIONS,DELETE,PUT,PATCH',
-    // origin: [
-    //   /^(.*)/,
-    // ],
-    // methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    // preflightContinue: false,
-    // optionsSuccessStatus: 200,
-    // credentials: true,
-    // maxAge: 60 * 60 * 24 * 1000,
-    // allowedHeaders:
-    //   'Origin,X-Requested-With,Content-Type,Accept,Authorization,authorization,X-Forwarded-for',
   })
 
   app.setGlobalPrefix('api')
