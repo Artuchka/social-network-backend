@@ -21,7 +21,14 @@ const opts = {
 }
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule)
+  const app = await NestFactory.create(AppModule, {
+    cors: {
+      origin: function (origin, callback) {
+        console.log('allowed cors for:', origin)
+        callback(null, true)
+      },
+    },
+  })
   // const options = {
   //   origin: '*',
   //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
@@ -30,16 +37,16 @@ async function bootstrap() {
   //   credentials: true,
   // } as CorsOptions
   // app.enableCors(options)
-  app.enableCors({
-    origin: function (origin, callback) {
-      console.log('allowed cors for:', origin)
-      callback(null, true)
-    },
-    allowedHeaders:
-      'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe',
-    methods: 'GET,PUT,POST,DELETE,UPDATE,OPTIONS',
-    credentials: true,
-  })
+  // app.enableCors({
+  //   origin: function (origin, callback) {
+  //     console.log('allowed cors for:', origin)
+  //     callback(null, true)
+  //   },
+  //   allowedHeaders:
+  //     'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe',
+  //   methods: 'GET,PUT,POST,DELETE,UPDATE,OPTIONS',
+  //   credentials: true,
+  // })
 
   // app.enableCors({
   //   // origin: ['http://localhost', /localhost/],

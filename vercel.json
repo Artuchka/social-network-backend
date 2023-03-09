@@ -1,17 +1,15 @@
 {
     "version": 2,
-    "buildCommand": "npm start",
-    "installCommand": "npm install",
     "builds": [
         {
-            "src": "dist/main.js",
+            "src": "src/main.js",
             "use": "@vercel/node"
         }
     ],
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "dist/main.js",
+            "dest": "src/main.js",
             "methods": [
                 "GET",
                 "POST",

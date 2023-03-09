@@ -19,15 +19,13 @@ const opts = {
     ],
 };
 async function bootstrap() {
-    const app = await core_1.NestFactory.create(app_module_1.AppModule);
-    app.enableCors({
-        origin: function (origin, callback) {
-            console.log('allowed cors for:', origin);
-            callback(null, true);
+    const app = await core_1.NestFactory.create(app_module_1.AppModule, {
+        cors: {
+            origin: function (origin, callback) {
+                console.log('allowed cors for:', origin);
+                callback(null, true);
+            },
         },
-        allowedHeaders: 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe',
-        methods: 'GET,PUT,POST,DELETE,UPDATE,OPTIONS',
-        credentials: true,
     });
     app.setGlobalPrefix('api');
     app.use(cookieParser(process.env.SECRET));
