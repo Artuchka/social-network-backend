@@ -24,9 +24,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule)
 
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: [
+      'http://localhost:3000',
+      'https://testing-social-restapi.vercel.app/',
+    ],
     preflightContinue: true,
-    methods: ['GET,POST,OPTIONS,DELETE,PUT'],
+    optionsSuccessStatus: 200,
+    methods: ['GET,POST,OPTIONS,DELETE,PUT,PATCH'],
   })
 
   app.setGlobalPrefix('api')
