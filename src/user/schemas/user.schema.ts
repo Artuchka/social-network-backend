@@ -62,9 +62,9 @@ export class User {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Photo',
-    default: null,
+    default: '640b5a618689e4fd23e5d90d',
   })
-  avatar: Photo | string
+  avatar: Photo
 
   @Prop({
     type: UserInfo,
@@ -125,6 +125,7 @@ export class User {
   })
   likes: UserEntries
 
+  // _id: string
   id: string
   fullname: string
 }

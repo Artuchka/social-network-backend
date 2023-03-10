@@ -29,6 +29,19 @@ export class UserService {
     }
   }
 
+  _pickUser(user: UserDocument) {
+    const { _id, firstname, lastname, username, gender, avatar, roles } = user
+    return {
+      id: _id.toString(),
+      firstname,
+      lastname,
+      username,
+      gender,
+      avatar: { id: avatar.id, path: avatar.path },
+      roles,
+    }
+  }
+
   async create(dto: NewUserDto): Promise<UserDetails> {
     const { email, password } = dto
 
@@ -36,14 +49,22 @@ export class UserService {
     return this._getUserDetails(user)
   }
 
-  async getSingleById(id: string): Promise<UserDocument> {
-    const user = await this.userModel.findById(id).select('-password')
+  async getSingleById(
+    id: string,
+  ): Promise<ReturnType<UserService['_pickUser']>> {
+    const user = await this.userModel
+      .findById(id)
+      .populate({ path: 'avatar', select: 'path' })
 
-    return user
+    const pickedUser = this._pickUser(user)
+
+    return pickedUser
   }
 
   async getSingleByEmail(email: string): Promise<UserDocument> {
-    const user = await this.userModel.findOne({ email })
+    const user = await this.userModel
+      .findOne({ email })
+      .populate({ path: 'avatar', select: 'path' })
 
     return user
   }

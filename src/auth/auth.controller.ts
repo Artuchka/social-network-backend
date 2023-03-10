@@ -12,12 +12,16 @@ import { Response } from 'express'
 import { NewUserDto } from './../user/dto/new-user.dto'
 import { ExistingUserDto } from './../user/dto/existing-user.dto'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
-import { UserDocument } from '../user/schemas/user.schema'
+import { User } from '../user/schemas/user.schema'
+import { UserService } from '../user/services/user.service'
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private userService: UserService,
+  ) {}
 
   @Post('register')
   @HttpCode(201)
@@ -43,7 +47,10 @@ export class AuthController {
     const { token, user } = await this.authService.login(tryingUser)
 
     this.authService.setCookie(res, token)
-    return { message: 'Welcome back!', user }
+
+    const pickedUser = this.userService._pickUser(user)
+
+    return { message: 'Welcome back!', user: pickedUser }
   }
 
   @Get('logout')

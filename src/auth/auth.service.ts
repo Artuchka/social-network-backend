@@ -50,6 +50,7 @@ export class AuthService {
     password: string,
   ): Promise<{ userDetails; user }> {
     const user = await this.userService.getSingleByEmail(email)
+
     if (!user) {
       throw new NotFoundException('no such user with email: ' + email)
     }
@@ -91,9 +92,9 @@ export class AuthService {
 
     res.cookie('accessToken', token, {
       expires: new Date(Date.now() + oneDay),
-      httpOnly: false,
-      secure: true,
-      sameSite: 'none',
+      // httpOnly: false,
+      // secure: true,
+      // sameSite: 'none',
     })
 
     return { token }
