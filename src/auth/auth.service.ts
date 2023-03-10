@@ -92,9 +92,9 @@ export class AuthService {
 
     res.cookie('accessToken', token, {
       expires: new Date(Date.now() + oneDay),
-      // httpOnly: false,
-      // secure: true,
-      // sameSite: 'none',
+      httpOnly: false,
+      secure: true,
+      sameSite: 'none',
     })
 
     return { token }
