@@ -78,6 +78,29 @@ export class AuthService {
     return { user, token }
   }
 
+  async validateUserById(userId: string): Promise<{ userDetails; user }> {
+    const user = await this.userService.getSingleById(userId)
+
+    if (!user) {
+      throw new NotFoundException('no such user with userId: ' + userId)
+    }
+
+    const userDetails = this.userService._getUserDetails(user)
+    return { userDetails, user }
+  }
+
+  async loginJWT(
+    userId: string,
+  ): Promise<{ user: UserDocument; token: string }> {
+    const { user, userDetails } = await this.validateUserById(userId)
+
+    const token = await this.jwtService.signAsync({
+      user: userDetails,
+    })
+
+    return { user, token }
+  }
+
   async logout(res: Response): Promise<{ token: string } | null> {
     res.clearCookie('accessToken')
 
@@ -92,9 +115,9 @@ export class AuthService {
 
     res.cookie('accessToken', token, {
       expires: new Date(Date.now() + oneDay),
-      // httpOnly: false,
-      // secure: true,
-      // sameSite: 'none',
+      httpOnly: false,
+      secure: true,
+      sameSite: 'none',
     })
 
     return { token }

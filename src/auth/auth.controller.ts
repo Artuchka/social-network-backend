@@ -6,14 +6,16 @@ import {
   HttpStatus,
   Post,
   Res,
+  UseGuards,
 } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { Response } from 'express'
 import { NewUserDto } from './../user/dto/new-user.dto'
 import { ExistingUserDto } from './../user/dto/existing-user.dto'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
-import { User } from '../user/schemas/user.schema'
 import { UserService } from '../user/services/user.service'
+import { JwtGuard } from './guards/jwt.guard'
+import { User } from '../user/decorators/user.decorator'
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -35,7 +37,7 @@ export class AuthController {
   @Post('login')
   @ApiOperation({
     summary: 'Login user',
-    description: 'adds accessToken onto cookies',
+    description: 'adds accessToken onto cookies + sends user details',
   })
   async login(
     @Res({ passthrough: true }) res: Response,
@@ -45,6 +47,27 @@ export class AuthController {
     console.log({ tryingUser })
 
     const { token, user } = await this.authService.login(tryingUser)
+
+    this.authService.setCookie(res, token)
+
+    const pickedUser = this.userService._pickUser(user)
+
+    return { message: 'Welcome back!', user: pickedUser }
+  }
+
+  @Post('loginJWT')
+  @UseGuards(JwtGuard)
+  @ApiOperation({
+    summary: 'Login user by accessToken from cookies',
+    description: 'updates accessToken onto cookies + sends user details',
+  })
+  async loginJWT(
+    @Res({ passthrough: true }) res: Response,
+    @User('id') userID: string,
+  ) {
+    console.log({ res })
+
+    const { token, user } = await this.authService.loginJWT(userID)
 
     this.authService.setCookie(res, token)
 

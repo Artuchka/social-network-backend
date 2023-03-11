@@ -49,16 +49,14 @@ export class UserService {
     return this._getUserDetails(user)
   }
 
-  async getSingleById(
-    id: string,
-  ): Promise<ReturnType<UserService['_pickUser']>> {
+  async getSingleById(id: string): Promise<UserDocument> {
     const user = await this.userModel
       .findById(id)
       .populate({ path: 'avatar', select: 'path' })
 
-    const pickedUser = this._pickUser(user)
+    // const pickedUser = this._pickUser(user)
 
-    return pickedUser
+    return user
   }
 
   async getSingleByEmail(email: string): Promise<UserDocument> {
