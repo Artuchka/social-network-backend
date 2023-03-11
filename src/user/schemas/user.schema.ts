@@ -62,7 +62,7 @@ export class User {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Photo',
-    default: '640b5a618689e4fd23e5d90d',
+    default: '640cd80d96ce8f8cdb550804', // bgPhotoID highQ
   })
   avatar: Photo
 

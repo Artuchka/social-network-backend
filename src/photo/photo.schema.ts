@@ -11,8 +11,6 @@ export class Photo extends Entry {
   @Prop({
     type: String,
     required: true,
-    // default:
-    //   'https://res.cloudinary.com/dzy8xh83i/image/upload/v1678463424/zavod-defaults/defualt-user-avatar_mztqfc.jpg',
   })
   path: string
 
