@@ -31,6 +31,7 @@ async function bootstrap() {
     preflightContinue: false,
     optionsSuccessStatus: 204,
     methods: 'GET,POST,OPTIONS,DELETE,PUT,PATCH',
+    credentials: true,
   })
 
   app.setGlobalPrefix('api')
