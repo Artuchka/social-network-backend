@@ -185,12 +185,25 @@ export class UserController {
 
   @Delete(':id')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.USER)
   @ApiOperation({ summary: 'Delete a user' })
-  async deleteSingle(@Param('id') id: string) {
-    const user = await this.userService.deleteSingle(id)
+  async deleteSingle(
+    @Param('id') deleteUserId: string,
+    @User('id') authUserId: string,
+    @User('roles') roles,
+  ) {
+    if (
+      deleteUserId.toString() !== authUserId.toString() &&
+      !roles.includes(Role.ADMIN)
+    ) {
+      throw new ForbiddenException(
+        `You are not allowed to deleter user with id=${deleteUserId}`,
+      )
+    }
+
+    const user = await this.userService.deleteSingle(deleteUserId)
     if (!user) {
-      throw new NotFoundException(`User ${id} not found`)
+      throw new NotFoundException(`User ${deleteUserId} not found`)
     }
 
     return { message: 'deleted', user }
