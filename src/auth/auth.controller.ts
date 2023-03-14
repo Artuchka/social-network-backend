@@ -76,7 +76,7 @@ export class AuthController {
     return { message: 'Welcome back!', user: pickedUser }
   }
 
-  @Get('logout')
+  @Post('logout')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Logout user',
