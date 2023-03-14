@@ -102,7 +102,7 @@ export class AuthService {
   }
 
   async logout(res: Response): Promise<{ token: string } | null> {
-    res.clearCookie('accessToken')
+    res.clearCookie('accessToken', { sameSite: 'none' })
 
     return { token: null }
   }
